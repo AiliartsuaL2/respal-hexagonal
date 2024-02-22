@@ -1,27 +1,30 @@
 package hckt.respalhex.member.adapter.out.persistence;
 
-import hckt.respalhex.member.application.port.dto.request.CreateMemberRequestDto;
+import hckt.respalhex.global.annotation.PersistenceAdapter;
+import hckt.respalhex.member.application.dto.request.CreateMemberRequestDto;
 import hckt.respalhex.member.application.port.out.CommandMemberPort;
 import hckt.respalhex.member.application.port.out.LoadMemberPort;
 import hckt.respalhex.member.domain.Member;
-import hckt.respalhex.member.domain.MemberRepository;
+import java.util.Locale;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
-@Component
-public class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPort {
+@PersistenceAdapter
+class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPort {
     private final MemberRepository memberRepository;
+    private final MemberMapper memberMapper;
 
     @Override
-    public void create(CreateMemberRequestDto createMemberRequestDto) {
-        Member member = Member.create(createMemberRequestDto);
-        memberRepository.save(member);
+    public void create(Member member) {
+        MemberEntity memberEntity = memberMapper.mapDomainToEntity(member);
+        memberRepository.save(memberEntity);
     }
 
     @Override
-    public Member loadMember(Long id) {
+    public Optional<Member> loadMember(Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 회원이 존재하지 않습니다"));
+                .map(memberEntity -> new Member(memberEntity.getId(), memberEntity.getEmail()));
     }
 }
