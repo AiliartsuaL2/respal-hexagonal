@@ -1,5 +1,8 @@
 package hckt.respalhex.member.application.service;
 
+import hckt.respalhex.global.annotation.UseCase;
+import hckt.respalhex.global.exception.ErrorMessage;
+import hckt.respalhex.member.application.dto.response.GetMemberResponseDto;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import hckt.respalhex.member.application.port.in.GetMemberUseCase;
 import hckt.respalhex.member.application.port.in.PostMemberUseCase;
@@ -11,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@UseCase
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService implements PostMemberUseCase, GetMemberUseCase {
@@ -19,13 +22,22 @@ public class MemberService implements PostMemberUseCase, GetMemberUseCase {
     private final CommandMemberPort commandMemberPort;
 
     @Override
-    public void create(PostMemberRequestDto postMemberRequestDto) {
-        Member member = new Member(null, postMemberRequestDto.email());
+    @Transactional
+    public void create(PostMemberRequestDto requestDto) {
+        Member member = Member.builder()
+                .email(requestDto.email())
+                .password(requestDto.password())
+                .nickname(requestDto.nickname())
+                .picture(requestDto.picture())
+                .build();
         commandMemberPort.create(member);
     }
 
     @Override
-    public Optional<Member> getMember(Long id) {
-        return loadMemberPort.loadMember(id);
+    public GetMemberResponseDto getMember(Long id) {
+        Member member = loadMemberPort.loadMember(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXIST_MEMBER_EXCEPTION.getMessage()));
+        return new GetMemberResponseDto(member.email());
     }
 }
+

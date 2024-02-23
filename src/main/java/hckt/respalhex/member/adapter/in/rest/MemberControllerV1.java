@@ -2,8 +2,7 @@ package hckt.respalhex.member.adapter.in.rest;
 
 import hckt.respalhex.global.dto.ApiCommonResponse;
 import hckt.respalhex.member.adapter.dto.request.CreateMemberRequestDto;
-import hckt.respalhex.member.adapter.dto.response.GetMemberResponseDto;
-import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
+import hckt.respalhex.member.application.dto.response.GetMemberResponseDto;
 import hckt.respalhex.member.application.port.in.GetMemberUseCase;
 import hckt.respalhex.member.application.port.in.PostMemberUseCase;
 import hckt.respalhex.member.domain.Member;
@@ -35,9 +34,7 @@ public class MemberControllerV1 {
     @GetMapping
     public ResponseEntity<ApiCommonResponse<GetMemberResponseDto>> get(
             @RequestParam Long id) {
-        Member member = getMemberUseCase.getMember(id)
-                .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 회원이 존재하지 않아요"));
-        GetMemberResponseDto responseDto = new GetMemberResponseDto(member.email());
+        GetMemberResponseDto responseDto = getMemberUseCase.getMember(id);
         return ResponseEntity.ok(new ApiCommonResponse<>(true, responseDto));
     }
 }
