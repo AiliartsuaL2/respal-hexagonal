@@ -23,6 +23,6 @@ class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPort {
     @Override
     public Optional<Member> loadMember(Long id) {
         return memberRepository.findById(id)
-                .map(memberEntity -> memberMapper.mapEntityToDomain(memberEntity));
+                .map(memberMapper::mapEntityToDomain);
     }
 }

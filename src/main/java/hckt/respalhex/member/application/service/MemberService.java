@@ -24,12 +24,7 @@ public class MemberService implements PostMemberUseCase, GetMemberUseCase {
     @Override
     @Transactional
     public void create(PostMemberRequestDto requestDto) {
-        Member member = Member.builder()
-                .email(requestDto.email())
-                .password(requestDto.password())
-                .nickname(requestDto.nickname())
-                .picture(requestDto.picture())
-                .build();
+        Member member = Member.of(requestDto);
         commandMemberPort.create(member);
     }
 

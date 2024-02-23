@@ -1,6 +1,7 @@
 package hckt.respalhex.member.adapter.out.persistence;
 
 import hckt.respalhex.global.annotation.EntityMapper;
+import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import hckt.respalhex.member.domain.Member;
 
 @EntityMapper
@@ -10,11 +11,11 @@ class MemberMapper {
     }
 
     Member mapEntityToDomain(MemberEntity memberEntity) {
-        return Member.builder()
-                .id(memberEntity.getId())
+        return Member.of(PostMemberRequestDto.builder()
+                .email(memberEntity.getEmail())
                 .password(memberEntity.getPassword())
-                .nickname(memberEntity.getNickname())
                 .picture(memberEntity.getPicture())
-                .build();
+                .nickname(memberEntity.getNickname())
+                .build());
     }
 }
