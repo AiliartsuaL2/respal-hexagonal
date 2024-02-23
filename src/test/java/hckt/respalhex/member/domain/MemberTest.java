@@ -15,13 +15,21 @@ class MemberTest {
     private static final String PICTURE = "picture";
 
     @Nested
-    @DisplayName("생성자 테스트")
-    class Constructor {
+    @DisplayName("정적 팩토리 메서드 테스트")
+    class Of {
         @Test
-        @DisplayName("회원 생성시 비밀번호가 암호화되어 저장된다")
-        void 회원_생성시_비밀번호가_암호화되어_저장된다() {
-            // given & when
-            Member member = new Member(null, EMAIL, PASSWORD, NICKNAME, PICTURE);
+        @DisplayName("정적 팩토리 메서드로 객체 생성시 비밀번호가 암호화되어 저장된다")
+        void 정적_팩토리_메서드로_객체_생성시_비밀번호가_암호화되어_저장된다() {
+            // given
+            PostMemberRequestDto requestDto = PostMemberRequestDto.builder()
+                    .email(EMAIL)
+                    .password(PASSWORD)
+                    .nickname(NICKNAME)
+                    .picture(PICTURE)
+                    .build();
+
+            // when
+            Member member = Member.of(requestDto);
 
             // then
             assertThat(member.password().length()).isEqualTo(60);
@@ -32,9 +40,14 @@ class MemberTest {
         void 이미지_미설정후_생성시_이미지가_gravatar_이미지로_생성된다() {
             // given
             String imagePrefix = "gravatar";
+            PostMemberRequestDto requestDto = PostMemberRequestDto.builder()
+                    .email(EMAIL)
+                    .password(PASSWORD)
+                    .nickname(NICKNAME)
+                    .build();
 
             // when
-            Member member = new Member(null, EMAIL, PASSWORD, NICKNAME, null);
+            Member member = Member.of(requestDto);
 
             // then
             assertThat(member.picture()).contains(imagePrefix);
@@ -44,21 +57,35 @@ class MemberTest {
         @DisplayName("이미지 설정후 생성시 이미지가 설정한 이미지로 생성된다.")
         void 이미지_설정후_생성시_이미지가_설정한_이미지로_생성된다() {
             // given
-            String image = "설정한 이미지";
+            PostMemberRequestDto requestDto = PostMemberRequestDto.builder()
+                    .email(EMAIL)
+                    .password(PASSWORD)
+                    .nickname(NICKNAME)
+                    .picture(PICTURE)
+                    .build();
+
 
             // when
-            Member member = new Member(null, EMAIL, PASSWORD, NICKNAME, image);
+            Member member = Member.of(requestDto);
 
             // then
-            assertThat(member.picture()).isEqualTo(image);
+            assertThat(member.picture()).isEqualTo(PICTURE);
         }
     }
 
     @Test
     @DisplayName("암호화 비밀번호 일치여부 테스트")
     void 암호화_비밀번호_일치여부_테스트() {
-        // given & when
-        Member member = new Member(null, EMAIL, PASSWORD, NICKNAME, PICTURE);
+        // given
+        PostMemberRequestDto requestDto = PostMemberRequestDto.builder()
+                .email(EMAIL)
+                .password(PASSWORD)
+                .nickname(NICKNAME)
+                .picture(PICTURE)
+                .build();
+
+        // when
+        Member member = Member.of(requestDto);
 
         // then
         assertThat(member.matchPassword(PASSWORD)).isTrue();

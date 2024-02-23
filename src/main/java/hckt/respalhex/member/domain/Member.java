@@ -13,17 +13,14 @@ public record Member(
         String nickname,
         String picture
 ) {
-        private static String RANDOM_PICTURE_URL = "https://www.gravatar.com/avatar/";
-        private static String PICTURE_TYPE_PARAM = "?d=identicon";
+        private static final String RANDOM_PICTURE_URL = "https://www.gravatar.com/avatar/";
+        private static final String PICTURE_TYPE_PARAM = "?d=identicon";
         private static final BCryptPasswordEncoder B_CRYPT_PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
-        public Member {
-                password = B_CRYPT_PASSWORD_ENCODER.encode(password);
-                picture = checkPicture(picture);
-        }
-
         public static Member of(PostMemberRequestDto requestDto) {
-                return new Member(null, requestDto.email(), requestDto.password(), requestDto.nickname(), requestDto.picture());
+                String encodedPassword = B_CRYPT_PASSWORD_ENCODER.encode(requestDto.password());
+                String checkedPicture = checkPicture(requestDto.picture());
+                return new Member(null, requestDto.email(), encodedPassword, requestDto.nickname(), checkedPicture);
         }
 
         public boolean matchPassword(String password) {

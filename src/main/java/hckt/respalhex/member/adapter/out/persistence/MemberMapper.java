@@ -11,11 +11,6 @@ class MemberMapper {
     }
 
     Member mapEntityToDomain(MemberEntity memberEntity) {
-        return Member.of(PostMemberRequestDto.builder()
-                .email(memberEntity.getEmail())
-                .password(memberEntity.getPassword())
-                .picture(memberEntity.getPicture())
-                .nickname(memberEntity.getNickname())
-                .build());
+        return new Member(memberEntity.getId(), memberEntity.getEmail(), memberEntity.getPassword(), memberEntity.getNickname(), memberEntity.getPicture());
     }
 }
