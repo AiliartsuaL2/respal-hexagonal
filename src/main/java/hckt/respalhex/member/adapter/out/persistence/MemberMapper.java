@@ -6,7 +6,7 @@ import hckt.respalhex.member.domain.Member;
 @EntityMapper
 class MemberMapper {
     MemberEntity mapDomainToEntity(Member member) {
-        return MemberEntity.create(member.id(), member.email());
+        return MemberEntity.create(member.email());
     }
 
     Member mapEntityToDomain(MemberEntity memberEntity) {

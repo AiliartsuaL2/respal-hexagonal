@@ -1,8 +1,11 @@
 package hckt.respalhex.member.domain;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public record Member(Long id, String email) {
+public record Member(
+        @Getter
+        Long id,
+        @Getter
+        String email
+) {
 }

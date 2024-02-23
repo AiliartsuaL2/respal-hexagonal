@@ -1,8 +1,9 @@
 package hckt.respalhex.member.adapter.in.rest;
 
 import hckt.respalhex.global.dto.ApiCommonResponse;
+import hckt.respalhex.member.adapter.dto.request.CreateMemberRequestDto;
 import hckt.respalhex.member.adapter.dto.response.GetMemberResponseDto;
-import hckt.respalhex.member.application.dto.request.CreateMemberRequestDto;
+import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import hckt.respalhex.member.application.port.in.GetMemberUseCase;
 import hckt.respalhex.member.application.port.in.PostMemberUseCase;
 import hckt.respalhex.member.domain.Member;
@@ -27,7 +28,7 @@ public class MemberControllerV1 {
     @PostMapping
     public ResponseEntity<ApiCommonResponse<String>> create(
             @RequestBody CreateMemberRequestDto requestDto) {
-        postMemberUseCase.create(requestDto);
+        postMemberUseCase.create(requestDto.convertToApplicationDto());
         return ResponseEntity.ok(new ApiCommonResponse<>(true, "회원가입에 성공하였어요."));
     }
 

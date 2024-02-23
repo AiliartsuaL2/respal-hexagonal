@@ -1,6 +1,6 @@
 package hckt.respalhex.member.application.service;
 
-import hckt.respalhex.member.application.dto.request.CreateMemberRequestDto;
+import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import hckt.respalhex.member.application.port.in.GetMemberUseCase;
 import hckt.respalhex.member.application.port.in.PostMemberUseCase;
 import hckt.respalhex.member.application.port.out.CommandMemberPort;
@@ -19,8 +19,8 @@ public class MemberService implements PostMemberUseCase, GetMemberUseCase {
     private final CommandMemberPort commandMemberPort;
 
     @Override
-    public void create(CreateMemberRequestDto createMemberDto) {
-        Member member = new Member(createMemberDto.id(), createMemberDto.email());
+    public void create(PostMemberRequestDto postMemberRequestDto) {
+        Member member = new Member(null, postMemberRequestDto.email());
         commandMemberPort.create(member);
     }
 

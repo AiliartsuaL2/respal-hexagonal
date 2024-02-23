@@ -17,9 +17,8 @@ class MemberEntity {
     @Getter
     private String email;
 
-    static MemberEntity create(Long id, String email) {
+    static MemberEntity create(String email) {
         MemberEntity memberEntity = new MemberEntity();
-        memberEntity.id = id;
         memberEntity.email = email;
         return memberEntity;
     }
