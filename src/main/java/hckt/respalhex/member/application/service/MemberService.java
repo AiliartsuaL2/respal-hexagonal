@@ -24,6 +24,9 @@ public class MemberService implements PostMemberUseCase, GetMemberUseCase {
     @Override
     @Transactional
     public void create(PostMemberRequestDto requestDto) {
+        if(loadMemberPort.loadMemberByEmail(requestDto.email()).isPresent()) {
+            throw new IllegalStateException(ErrorMessage.ALREADY_EXIST_MEMBER_EMAIL_EXCEPTION.getMessage());
+        }
         Member member = Member.of(requestDto);
         commandMemberPort.create(member);
     }

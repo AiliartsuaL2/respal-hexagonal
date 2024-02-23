@@ -5,4 +5,5 @@ import java.util.Optional;
 
 public interface LoadMemberPort {
     Optional<Member> loadMember(Long id);
+    Optional<Member> loadMemberByEmail(String email);
 }
