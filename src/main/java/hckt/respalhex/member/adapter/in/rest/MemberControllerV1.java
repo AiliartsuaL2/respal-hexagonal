@@ -20,19 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/v1.0.0/member")
-public class MemberControllerV1 {
+class MemberControllerV1 {
     private final PostMemberUseCase postMemberUseCase;
     private final GetMemberUseCase getMemberUseCase;
 
     @PostMapping
-    public ResponseEntity<ApiCommonResponse<String>> create(
+    ResponseEntity<ApiCommonResponse<String>> create(
             @RequestBody CreateMemberRequestDto requestDto) {
         postMemberUseCase.create(requestDto.convertToApplicationDto());
         return ResponseEntity.ok(new ApiCommonResponse<>(true, "회원가입에 성공하였어요."));
     }
 
     @GetMapping
-    public ResponseEntity<ApiCommonResponse<GetMemberResponseDto>> get(
+    ResponseEntity<ApiCommonResponse<GetMemberResponseDto>> get(
             @RequestParam Long id) {
         GetMemberResponseDto responseDto = getMemberUseCase.getMember(id);
         return ResponseEntity.ok(new ApiCommonResponse<>(true, responseDto));

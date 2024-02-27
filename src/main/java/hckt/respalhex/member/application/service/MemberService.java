@@ -9,15 +9,13 @@ import hckt.respalhex.member.application.port.in.PostMemberUseCase;
 import hckt.respalhex.member.application.port.out.CommandMemberPort;
 import hckt.respalhex.member.application.port.out.LoadMemberPort;
 import hckt.respalhex.member.domain.Member;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @UseCase
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class MemberService implements PostMemberUseCase, GetMemberUseCase {
+class MemberService implements PostMemberUseCase, GetMemberUseCase {
     private final LoadMemberPort loadMemberPort;
     private final CommandMemberPort commandMemberPort;
 
