@@ -16,7 +16,7 @@ class MemberTest {
 
     @Nested
     @DisplayName("정적 팩토리 메서드 테스트")
-    class Of {
+    class Create {
         @Test
         @DisplayName("정적 팩토리 메서드로 객체 생성시 비밀번호가 암호화되어 저장된다")
         void 정적_팩토리_메서드로_객체_생성시_비밀번호가_암호화되어_저장된다() {
@@ -29,10 +29,10 @@ class MemberTest {
                     .build();
 
             // when
-            Member member = Member.of(requestDto);
+            Member member = Member.create(requestDto);
 
             // then
-            assertThat(member.password().length()).isEqualTo(60);
+            assertThat(member.getPassword().length()).isEqualTo(60);
         }
 
         @Test
@@ -47,10 +47,10 @@ class MemberTest {
                     .build();
 
             // when
-            Member member = Member.of(requestDto);
+            Member member = Member.create(requestDto);
 
             // then
-            assertThat(member.picture()).contains(imagePrefix);
+            assertThat(member.getPicture()).contains(imagePrefix);
         }
 
         @Test
@@ -66,10 +66,10 @@ class MemberTest {
 
 
             // when
-            Member member = Member.of(requestDto);
+            Member member = Member.create(requestDto);
 
             // then
-            assertThat(member.picture()).isEqualTo(PICTURE);
+            assertThat(member.getPicture()).isEqualTo(PICTURE);
         }
     }
 
@@ -85,7 +85,7 @@ class MemberTest {
                 .build();
 
         // when
-        Member member = Member.of(requestDto);
+        Member member = Member.create(requestDto);
 
         // then
         assertThat(member.matchPassword(PASSWORD)).isTrue();

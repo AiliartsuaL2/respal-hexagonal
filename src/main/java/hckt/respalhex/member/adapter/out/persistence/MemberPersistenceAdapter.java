@@ -12,23 +12,19 @@ import lombok.RequiredArgsConstructor;
 @PersistenceAdapter
 class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPort {
     private final MemberRepository memberRepository;
-    private final MemberMapper memberMapper;
 
     @Override
     public void create(Member member) {
-        MemberEntity memberEntity = memberMapper.mapDomainToEntity(member);
-        memberRepository.save(memberEntity);
+        memberRepository.save(member);
     }
 
     @Override
     public Optional<Member> loadMember(Long id) {
-        return memberRepository.findById(id)
-                .map(memberMapper::mapEntityToDomain);
+        return memberRepository.findById(id);
     }
 
     @Override
     public Optional<Member> loadMemberByEmail(String email) {
-        return memberRepository.findMemberEntityByEmail(email)
-                .map(memberMapper::mapEntityToDomain);
+        return memberRepository.findMemberEntityByEmail(email);
     }
 }

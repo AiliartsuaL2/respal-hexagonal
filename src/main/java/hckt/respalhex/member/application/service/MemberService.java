@@ -27,7 +27,7 @@ public class MemberService implements PostMemberUseCase, GetMemberUseCase {
         if(loadMemberPort.loadMemberByEmail(requestDto.email()).isPresent()) {
             throw new IllegalStateException(ErrorMessage.ALREADY_EXIST_MEMBER_EMAIL_EXCEPTION.getMessage());
         }
-        Member member = Member.of(requestDto);
+        Member member = Member.create(requestDto);
         commandMemberPort.create(member);
     }
 
@@ -35,7 +35,7 @@ public class MemberService implements PostMemberUseCase, GetMemberUseCase {
     public GetMemberResponseDto getMember(Long id) {
         Member member = loadMemberPort.loadMember(id)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXIST_MEMBER_EXCEPTION.getMessage()));
-        return new GetMemberResponseDto(member.email());
+        return new GetMemberResponseDto(member.getEmail());
     }
 }
 

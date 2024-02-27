@@ -51,14 +51,16 @@ class MemberServiceTest {
         @DisplayName("동일한 이메일로 가입한 회원인 경우 예외 발생")
         void 동일한_이메일로_가입한_회원인_경우_예외_발생() {
             // given
-            when(loadMemberPort.loadMemberByEmail(EMAIL))
-                    .thenReturn(Optional.of(new Member(null, EMAIL, PASSWORD, NICKNAME, PICTURE)));
             PostMemberRequestDto requestDto = PostMemberRequestDto.builder()
                     .email(EMAIL)
                     .password(PASSWORD)
                     .nickname(NICKNAME)
                     .picture(PICTURE)
                     .build();
+            Member member = Member.create(requestDto);
+
+            when(loadMemberPort.loadMemberByEmail(EMAIL))
+                    .thenReturn(Optional.of(member));
 
             // when & then
             assertThatThrownBy(() -> memberService.create(requestDto))
