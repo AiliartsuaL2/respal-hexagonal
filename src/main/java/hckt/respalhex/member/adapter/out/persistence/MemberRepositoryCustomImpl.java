@@ -23,6 +23,6 @@ class MemberRepositoryCustomImpl implements MemberRepositoryCustom{
                 .where(member.email.eq(email)
                         .and(oAuth.provider.eq(provider)))
                 .fetchOne();
-        return Optional.of(result);
+        return Optional.ofNullable(result);
     }
 }

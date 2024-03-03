@@ -8,6 +8,7 @@ import hckt.respalhex.member.application.port.in.PostMemberUseCase;
 import hckt.respalhex.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +29,7 @@ class MemberControllerV1 {
     ResponseEntity<ApiCommonResponse<String>> create(
             @RequestBody CreateMemberRequestDto requestDto) {
         postMemberUseCase.create(requestDto.convertToApplicationDto());
-        return ResponseEntity.ok(new ApiCommonResponse<>(true, "회원가입에 성공하였어요."));
+        return new ResponseEntity<>(new ApiCommonResponse<>(true, "회원가입에 성공하였어요."), HttpStatus.CREATED);
     }
 
     @GetMapping
