@@ -19,6 +19,7 @@ class PostMemberRequestDtoTest {
         private static final String NICKNAME = "nickname";
         private static final String PASSWORD = "password";
         private static final String PICTURE = "picture";
+        private static final String PROVIDER = "common";
 
         @Test
         @DisplayName("정상 케이스")
@@ -29,6 +30,7 @@ class PostMemberRequestDtoTest {
                     .password(PASSWORD)
                     .nickname(NICKNAME)
                     .picture(PICTURE)
+                    .provider(PROVIDER)
                     .build();
 
             // then
@@ -46,7 +48,8 @@ class PostMemberRequestDtoTest {
             PostMemberRequestDto.PostMemberRequestDtoBuilder builder = PostMemberRequestDto.builder()
                     .password(PASSWORD)
                     .nickname(NICKNAME)
-                    .picture(PICTURE);
+                    .picture(PICTURE)
+                    .provider(PROVIDER);
 
             // when & then
             assertThatThrownBy(builder::build)
@@ -61,7 +64,8 @@ class PostMemberRequestDtoTest {
             PostMemberRequestDto.PostMemberRequestDtoBuilder builder = PostMemberRequestDto.builder()
                     .email(EMAIL)
                     .nickname(NICKNAME)
-                    .picture(PICTURE);
+                    .picture(PICTURE)
+                    .provider(PROVIDER);
 
             // when & then
             assertThatThrownBy(builder::build)
@@ -76,12 +80,29 @@ class PostMemberRequestDtoTest {
             PostMemberRequestDto.PostMemberRequestDtoBuilder builder = PostMemberRequestDto.builder()
                     .email(EMAIL)
                     .password(PASSWORD)
-                    .picture(PICTURE);
+                    .picture(PICTURE)
+                    .provider(PROVIDER);
 
             // when & then
             assertThatThrownBy(builder::build)
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage(ErrorMessage.NOT_EXIST_NICKNAME_EXCEPTION.getMessage());
+        }
+
+        @Test
+        @DisplayName("필수 인자 미입력시 예외 발생 - provider")
+        void 필수_인자_미입력시_예외_발생_provider() {
+            // given
+            PostMemberRequestDto.PostMemberRequestDtoBuilder builder = PostMemberRequestDto.builder()
+                    .email(EMAIL)
+                    .password(PASSWORD)
+                    .nickname(NICKNAME)
+                    .picture(PICTURE);
+
+            // when & then
+            assertThatThrownBy(builder::build)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage(ErrorMessage.NOT_EXIST_PROVIDER_TYPE_EXCEPTION.getMessage());
         }
 
         @Test
@@ -94,6 +115,7 @@ class PostMemberRequestDtoTest {
                     .email(EMAIL)
                     .password(PASSWORD)
                     .nickname(NICKNAME)
+                    .provider(PROVIDER)
                     .build();
 
             // then

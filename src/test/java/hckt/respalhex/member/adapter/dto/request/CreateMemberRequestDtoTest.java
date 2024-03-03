@@ -19,6 +19,7 @@ class CreateMemberRequestDtoTest {
         private static final String NICKNAME = "nickname";
         private static final String PASSWORD = "password";
         private static final String PICTURE = "picture";
+        private static final String PROVIDER = "common";
 
         @Test
         @DisplayName("정상 케이스")
@@ -29,6 +30,7 @@ class CreateMemberRequestDtoTest {
                     .password(PASSWORD)
                     .nickname(NICKNAME)
                     .picture(PICTURE)
+                    .provider(PROVIDER)
                     .build();
 
             // when
@@ -50,6 +52,7 @@ class CreateMemberRequestDtoTest {
                     .password(PASSWORD)
                     .nickname(NICKNAME)
                     .picture(PICTURE)
+                    .provider(PROVIDER)
                     .build();
 
             // when & then
@@ -66,6 +69,7 @@ class CreateMemberRequestDtoTest {
                     .email(EMAIL)
                     .nickname(NICKNAME)
                     .picture(PICTURE)
+                    .provider(PROVIDER)
                     .build();
 
             // when & then
@@ -82,12 +86,30 @@ class CreateMemberRequestDtoTest {
                     .email(EMAIL)
                     .password(PASSWORD)
                     .picture(PICTURE)
+                    .provider(PROVIDER)
                     .build();
 
             // when & then
             assertThatThrownBy(requestDto::convertToApplicationDto)
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage(ErrorMessage.NOT_EXIST_NICKNAME_EXCEPTION.getMessage());
+        }
+
+        @Test
+        @DisplayName("필수 인자 미입력시 예외 발생 - provider")
+        void 필수_인자_미입력시_예외_발생_provider() {
+            // given
+            CreateMemberRequestDto requestDto = CreateMemberRequestDto.builder()
+                    .email(EMAIL)
+                    .password(PASSWORD)
+                    .nickname(NICKNAME)
+                    .picture(PICTURE)
+                    .build();
+
+            // when & then
+            assertThatThrownBy(requestDto::convertToApplicationDto)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage(ErrorMessage.NOT_EXIST_PROVIDER_TYPE_EXCEPTION.getMessage());
         }
 
         @Test
@@ -98,6 +120,7 @@ class CreateMemberRequestDtoTest {
                     .email(EMAIL)
                     .password(PASSWORD)
                     .nickname(NICKNAME)
+                    .provider(PROVIDER)
                     .build();
 
             // when

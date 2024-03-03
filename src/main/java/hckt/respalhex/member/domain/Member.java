@@ -1,13 +1,17 @@
 package hckt.respalhex.member.domain;
 
 
+import hckt.respalhex.global.exception.ErrorMessage;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -38,6 +42,9 @@ public class Member {
     @Column(length = 2083)
     private String picture;
 
+    @OneToMany(mappedBy = "member")
+    private List<OAuth> oauthList;
+
     public static Member create(PostMemberRequestDto requestDto) {
         String encodedPassword = B_CRYPT_PASSWORD_ENCODER.encode(requestDto.password());
         String checkedPicture = checkPicture(requestDto.picture());
@@ -46,7 +53,15 @@ public class Member {
         member.nickname = requestDto.nickname();
         member.picture = checkedPicture;
         member.password = encodedPassword;
+        member.oauthList = new ArrayList<>();
         return member;
+    }
+
+    public void addOAuth(OAuth oAuth) {
+        if(oAuth == null) {
+            throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_OAUTH_INFO_EXCEPTION.getMessage());
+        }
+        oauthList.add(oAuth);
     }
 
     public boolean matchPassword(String password) {

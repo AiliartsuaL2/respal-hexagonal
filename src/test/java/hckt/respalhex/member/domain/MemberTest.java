@@ -13,6 +13,7 @@ class MemberTest {
     private static final String NICKNAME = "nickname";
     private static final String PASSWORD = "password";
     private static final String PICTURE = "picture";
+    private static final String PROVIDER = "common";
 
     @Nested
     @DisplayName("정적 팩토리 메서드 테스트")
@@ -26,6 +27,7 @@ class MemberTest {
                     .password(PASSWORD)
                     .nickname(NICKNAME)
                     .picture(PICTURE)
+                    .provider(PROVIDER)
                     .build();
 
             // when
@@ -44,6 +46,7 @@ class MemberTest {
                     .email(EMAIL)
                     .password(PASSWORD)
                     .nickname(NICKNAME)
+                    .provider(PROVIDER)
                     .build();
 
             // when
@@ -62,6 +65,7 @@ class MemberTest {
                     .password(PASSWORD)
                     .nickname(NICKNAME)
                     .picture(PICTURE)
+                    .provider(PROVIDER)
                     .build();
 
 
@@ -82,6 +86,7 @@ class MemberTest {
                 .password(PASSWORD)
                 .nickname(NICKNAME)
                 .picture(PICTURE)
+                .provider(PROVIDER)
                 .build();
 
         // when

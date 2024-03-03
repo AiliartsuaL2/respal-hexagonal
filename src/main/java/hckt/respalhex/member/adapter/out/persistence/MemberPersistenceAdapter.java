@@ -5,6 +5,7 @@ import hckt.respalhex.member.application.port.out.CommandMemberPort;
 import hckt.respalhex.member.application.port.out.LoadMemberPort;
 import hckt.respalhex.member.domain.Member;
 
+import hckt.respalhex.member.domain.converter.Provider;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +25,7 @@ class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPort {
     }
 
     @Override
-    public Optional<Member> loadMemberByEmail(String email) {
-        return memberRepository.findMemberEntityByEmail(email);
+    public Optional<Member> loadMemberByEmailAndProvider(String email, Provider provider) {
+        return memberRepository.findMemberByEmailAndProvider(email, provider);
     }
 }

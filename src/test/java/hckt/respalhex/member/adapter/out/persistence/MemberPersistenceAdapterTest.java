@@ -2,13 +2,13 @@ package hckt.respalhex.member.adapter.out.persistence;
 
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import hckt.respalhex.member.domain.Member;
+import hckt.respalhex.member.domain.converter.Provider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,12 +33,13 @@ class MemberPersistenceAdapterTest {
                 .picture(PICTURE)
                 .password(PASSWORD)
                 .email(EMAIL)
+                .provider(Provider.COMMON.getValue())
                 .build();
         Member member = Member.create(requestDto);
         memberPersistenceAdapter.create(member);
 
         // when
-        Optional<Member> memberEntity = memberRepository.findMemberEntityByEmail(EMAIL);
+        Optional<Member> memberEntity = memberRepository.findMemberByEmail(EMAIL);
 
         // then
         assertThat(memberEntity).isPresent();
@@ -48,7 +49,7 @@ class MemberPersistenceAdapterTest {
     @DisplayName("회원 미생성 후 이메일로 조회시 값이 존재하지 않는다.")
     void 회원_미생성_후_이메일로_조회시_값이_존재하지_않는다() {
         // given & when
-        Optional<Member> memberEntity = memberRepository.findMemberEntityByEmail(EMAIL);
+        Optional<Member> memberEntity = memberRepository.findMemberByEmail(EMAIL);
 
         // then
         assertThat(memberEntity).isEmpty();

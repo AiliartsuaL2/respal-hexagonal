@@ -9,6 +9,8 @@ import hckt.respalhex.member.application.port.in.PostMemberUseCase;
 import hckt.respalhex.member.application.port.out.CommandMemberPort;
 import hckt.respalhex.member.application.port.out.LoadMemberPort;
 import hckt.respalhex.member.domain.Member;
+import hckt.respalhex.member.domain.OAuth;
+import hckt.respalhex.member.domain.converter.Provider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +24,15 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase {
     @Override
     @Transactional
     public void create(PostMemberRequestDto requestDto) {
-        if(loadMemberPort.loadMemberByEmail(requestDto.email()).isPresent()) {
+        Provider provider = Provider.findByValue(requestDto.provider());
+        if(loadMemberPort.loadMemberByEmailAndProvider(requestDto.email(), provider).isPresent()) {
             throw new IllegalStateException(ErrorMessage.ALREADY_EXIST_MEMBER_EMAIL_EXCEPTION.getMessage());
         }
+
         Member member = Member.create(requestDto);
+        OAuth oAuth = OAuth.create(member, provider);
+        member.addOAuth(oAuth);
+
         commandMemberPort.create(member);
     }
 
