@@ -1,4 +1,4 @@
-package hckt.respalhex.global.exception;
+package hckt.respalhex.member.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

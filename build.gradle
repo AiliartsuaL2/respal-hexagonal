@@ -32,6 +32,9 @@ dependencies {
     // mysql
     implementation 'mysql:mysql-connector-java:8.0.28'
 
+    // jwt
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
     // Querydsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
@@ -52,6 +55,7 @@ task copyPrivate(type: Copy) {
     copy {
         from './respal-private'
         include "application-prod.yml"
+        include "application-test.yml"
         into 'src/main/resources'
     }
 }

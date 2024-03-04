@@ -1,6 +1,6 @@
 package hckt.respalhex.member.application.dto.request;
 
-import hckt.respalhex.global.exception.ErrorMessage;
+import hckt.respalhex.member.exception.ErrorMessage;
 import lombok.Builder;
 import org.springframework.util.ObjectUtils;
 

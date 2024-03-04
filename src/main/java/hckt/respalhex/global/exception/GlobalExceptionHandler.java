@@ -1,5 +1,6 @@
 package hckt.respalhex.global.exception;
 
+import hckt.respalhex.auth.exception.InvalidTokenException;
 import hckt.respalhex.global.dto.ApiErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ApiErrorResponse> illegalStateException(IllegalStateException ex){
         HttpStatus status = HttpStatus.BAD_REQUEST;
+        log.warn(
+                LOG_FORMAT,
+                ex.getClass().getSimpleName(),
+                status.value(),
+                ex.getMessage()
+        );
+        return ResponseEntity
+                .status(status)
+                .body(new ApiErrorResponse(status, ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ApiErrorResponse> invalidTokenException(InvalidTokenException ex){
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
         log.warn(
                 LOG_FORMAT,
                 ex.getClass().getSimpleName(),

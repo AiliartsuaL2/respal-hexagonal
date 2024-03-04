@@ -1,7 +1,7 @@
 package hckt.respalhex.member.domain;
 
 
-import hckt.respalhex.global.exception.ErrorMessage;
+import hckt.respalhex.member.exception.ErrorMessage;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,6 +1,6 @@
 package hckt.respalhex.member.application.service;
 
-import hckt.respalhex.global.exception.ErrorMessage;
+import hckt.respalhex.member.exception.ErrorMessage;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import hckt.respalhex.member.application.port.out.CommandMemberPort;
 import hckt.respalhex.member.application.port.out.LoadMemberPort;
