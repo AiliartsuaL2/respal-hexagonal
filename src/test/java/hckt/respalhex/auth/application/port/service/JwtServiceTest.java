@@ -10,7 +10,7 @@ import hckt.respalhex.auth.application.port.service.provider.GetTokenInfoProvide
 import hckt.respalhex.auth.domain.Token;
 import hckt.respalhex.auth.exception.ErrorMessage;
 import hckt.respalhex.auth.exception.InvalidTokenException;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -117,6 +117,8 @@ class JwtServiceTest {
         void test1() {
             //given
             Token token = jwtService.create(MEMBER_ID);
+            when(loadRefreshTokenPortMock.findByKeyId(MEMBER_ID))
+                    .thenReturn(Optional.of(token.refreshToken()));
 
             //when
             String renewedAccessToken = jwtService.renewAccessToken(token.refreshToken());
@@ -132,7 +134,7 @@ class JwtServiceTest {
             //given & when & then
             assertThatThrownBy(() -> jwtService.renewAccessToken(TOKEN_NULL))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage(ErrorMessage.NOT_EXIST_ACCESS_TOKEN_EXCEPTION.getMessage());
+                    .hasMessage(ErrorMessage.NOT_EXIST_REFRESH_TOKEN_EXCEPTION.getMessage());
         }
 
         @Test

@@ -10,10 +10,10 @@ import hckt.respalhex.auth.application.port.service.provider.GetTokenInfoProvide
 import hckt.respalhex.auth.domain.Token;
 import hckt.respalhex.auth.exception.InvalidTokenException;
 import hckt.respalhex.auth.exception.ErrorMessage;
-import io.jsonwebtoken.JwtException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 @RequiredArgsConstructor
 @Service
@@ -25,6 +25,9 @@ public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, Re
 
     @Override
     public Token create(Long memberId) {
+        if (ObjectUtils.isEmpty(memberId)) {
+            throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_MEMBER_ID_EXCEPTION.getMessage());
+        }
         String accessToken = createTokenProvider.createAccessToken(String.valueOf(memberId));
         String refreshToken = createRefreshToken(memberId);
         return new Token(accessToken, refreshToken);
@@ -32,12 +35,19 @@ public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, Re
 
     @Override
     public Long extractPayload(String accessToken) {
+        if (ObjectUtils.isEmpty(accessToken)) {
+            throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_ACCESS_TOKEN_EXCEPTION.getMessage());
+        }
         getTokenInfoProvider.validateAndThrow(accessToken);
         return Long.valueOf(getTokenInfoProvider.getPayload(accessToken));
     }
 
     @Override
     public String renewAccessToken(String requestRefreshToken) {
+        if (ObjectUtils.isEmpty(requestRefreshToken)) {
+           throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_REFRESH_TOKEN_EXCEPTION.getMessage());
+        }
+
         Long memberId = extractPayload(requestRefreshToken);
 
         // refresh 토큰 DB 검증
@@ -59,7 +69,7 @@ public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, Re
             commandRefreshTokenPort.delete(existRefreshToken);
         }
         String refreshToken = createTokenProvider.createRefreshToken(String.valueOf(memberId));
-        commandRefreshTokenPort.create(refreshToken);
+        commandRefreshTokenPort.create(memberId, refreshToken);
         return refreshToken;
     }
 }
