@@ -38,7 +38,6 @@ out/
 
 ### Project specific ###
 /data/
-/respal-private
 /src/main/generated/
 /src/main/resources/application-test.yml
 /src/main/resources/application-prod.yml
