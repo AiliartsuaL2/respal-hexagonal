@@ -24,7 +24,6 @@ public class UserAccount implements UserDetails {
     @Column(length = 20,nullable=false)
     private RoleType roleType;
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(this.roleType);

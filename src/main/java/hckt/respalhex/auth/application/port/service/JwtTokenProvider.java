@@ -2,8 +2,6 @@ package hckt.respalhex.auth.application.port.service;
 
 import hckt.respalhex.auth.application.port.service.provider.CreateTokenProvider;
 import hckt.respalhex.auth.application.port.service.provider.GetTokenInfoProvider;
-import hckt.respalhex.auth.exception.ErrorMessage;
-import hckt.respalhex.auth.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -72,7 +70,7 @@ public class JwtTokenProvider implements CreateTokenProvider, GetTokenInfoProvid
                     .parseClaimsJws(token);
             return claims.getBody()
                     .getExpiration()
-                    .before(new Date());
+                    .after(new Date());
         } catch (JwtException ex) {
             return false;
         }

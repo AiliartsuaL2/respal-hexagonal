@@ -2,9 +2,7 @@ package hckt.respalhex.auth.application.port.service;
 
 import hckt.respalhex.auth.exception.ErrorMessage;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.SignatureException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 @Transactional
@@ -126,7 +123,7 @@ class JwtTokenProviderTest {
     }
 
     @Nested
-    @DisplayName("payload 추출 테스트")
+    @DisplayName("토큰 검증 테스트")
     class IsValid {
         @Test
         @DisplayName("토큰이 정상적인 경우 true를 반환한다.")
@@ -189,7 +186,7 @@ class JwtTokenProviderTest {
     }
 
     @Nested
-    @DisplayName("검증 및 예외처리 테스트")
+    @DisplayName("토큰 검증 및 예외처리 테스트")
     class ValidateAndThrow {
         @Test
         @DisplayName("정상 토큰인 경우 아무것도 반환하지 않는다.")

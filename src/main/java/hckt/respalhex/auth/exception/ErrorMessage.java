@@ -17,7 +17,9 @@ public enum ErrorMessage {
     INCORRECT_TOKEN_TYPE_EXCEPTION(HttpStatus.UNAUTHORIZED, "발급되지 않은 토큰 정보에요"),
     PERMISSION_DENIED_EXCEPTION(HttpStatus.FORBIDDEN, "접근 권한이 없어요"),
     NOT_EXIST_TOKEN_INFO_EXCEPTION(HttpStatus.FORBIDDEN, "토큰 정보가 존재하지 않아요"),
-    NOT_EXIST_USER_ACCOUNT_EXCEPTION(HttpStatus.UNAUTHORIZED, "사용자 계정이 존재하지 않아요");
+    NOT_EXIST_USER_ACCOUNT_EXCEPTION(HttpStatus.UNAUTHORIZED, "사용자 계정이 존재하지 않아요"),
+    NOT_EXIST_PAYLOAD_EXCEPTION(HttpStatus.UNAUTHORIZED, "payLoad가 존재하지 않아요"),
+    NOT_EXIST_TOKEN_EXCEPTION(HttpStatus.BAD_REQUEST, "토큰이 존재하지 않아요");
 
     private final HttpStatus httpStatus;
     private final String message;

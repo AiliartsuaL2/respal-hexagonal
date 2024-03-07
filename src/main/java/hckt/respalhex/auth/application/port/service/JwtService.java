@@ -61,9 +61,9 @@ public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, Re
 
     private String createRefreshToken(Long memberId) {
         Optional<String> foundRefreshToken = loadRefreshTokenPort.findByKeyId(memberId);
-        if(foundRefreshToken.isPresent()) {
+        if (foundRefreshToken.isPresent()) {
             String existRefreshToken = foundRefreshToken.get();
-            if(getTokenInfoProvider.isValid(existRefreshToken)) {
+            if (getTokenInfoProvider.isValid(existRefreshToken)) {
                 return existRefreshToken;
             }
             commandRefreshTokenPort.delete(existRefreshToken);
