@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -22,7 +24,7 @@ import static org.mockito.Mockito.*;
 class MemberServiceTest {
     private final LoadMemberPort loadMemberPort = mock(LoadMemberPort.class);
     private final CommandMemberPort commandMemberPort = mock(CommandMemberPort.class);
-    private final MemberService memberService = new MemberService(loadMemberPort, commandMemberPort);
+    private final MemberService memberService = new MemberService(loadMemberPort, commandMemberPort, mock(ApplicationEventPublisher.class));
 
     private static final String EMAIL = "email";
     private static final String NICKNAME = "nickname";

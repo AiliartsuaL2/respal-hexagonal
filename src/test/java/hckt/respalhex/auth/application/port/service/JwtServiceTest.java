@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 
 @Transactional
 class JwtServiceTest {
-    JwtTokenProvider jwtTokenProvider = new JwtTokenProvider("HCGJtechRespal", 360000, 1580000, mock(UserDetailServiceImpl.class));
+    JwtTokenProvider jwtTokenProvider = new JwtTokenProvider("secretKey", 360000, 1580000, mock(UserDetailServiceImpl.class));
     CommandRefreshTokenPort commandRefreshTokenPortMock = mock(CommandRefreshTokenPort.class);
     LoadRefreshTokenPort loadRefreshTokenPortMock = mock(LoadRefreshTokenPort.class);
     CreateTokenProvider createTokenProviderMock = jwtTokenProvider;

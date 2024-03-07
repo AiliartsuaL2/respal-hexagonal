@@ -1,6 +1,9 @@
 package hckt.respalhex.auth.application.port.service;
 
+import hckt.respalhex.auth.application.port.in.CreateUserAccountUseCase;
+import hckt.respalhex.auth.application.port.out.CommandUserAccountPort;
 import hckt.respalhex.auth.application.port.out.LoadUserAccountPort;
+import hckt.respalhex.auth.domain.UserAccount;
 import hckt.respalhex.auth.exception.ErrorMessage;
 import hckt.respalhex.auth.exception.NotRegisteredUserAccountException;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +14,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserDetailServiceImpl implements UserDetailsService {
-    private final LoadUserAccountPort userAccountPort;
+public class UserDetailServiceImpl implements UserDetailsService, CreateUserAccountUseCase {
+    private final LoadUserAccountPort loadUserAccountPort;
+    private final CommandUserAccountPort commandUserAccountPort;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userAccountPort.findUserAccountByMemberId(Long.parseLong(username)).orElseThrow(
+        return loadUserAccountPort.findUserAccountByMemberId(Long.parseLong(username)).orElseThrow(
                 () -> new NotRegisteredUserAccountException(ErrorMessage.NOT_EXIST_USER_ACCOUNT_EXCEPTION.getMessage()));
+    }
+
+    @Override
+    public void create(UserAccount userAccount) {
+        commandUserAccountPort.create(userAccount);
     }
 }
