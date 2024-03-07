@@ -11,6 +11,9 @@ import hckt.respalhex.auth.domain.Token;
 import hckt.respalhex.auth.exception.ErrorMessage;
 import hckt.respalhex.auth.exception.InvalidTokenException;
 import java.util.Optional;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,7 +23,7 @@ import static org.mockito.Mockito.*;
 
 @Transactional
 class JwtServiceTest {
-    JwtTokenProvider jwtTokenProvider = new JwtTokenProvider("HCGJtechRespal", 360000, 1580000, mock(UserDetailServiceImpl.class));
+    JwtTokenProvider jwtTokenProvider = new JwtTokenProvider("secretKey", 360000, 1580000, mock(UserDetailServiceImpl.class));
     CommandRefreshTokenPort commandRefreshTokenPortMock = mock(CommandRefreshTokenPort.class);
     LoadRefreshTokenPort loadRefreshTokenPortMock = mock(LoadRefreshTokenPort.class);
     CreateTokenProvider createTokenProviderMock = jwtTokenProvider;
@@ -139,8 +142,7 @@ class JwtServiceTest {
         void test3() {
             //given & when & then
             assertThatThrownBy(() -> jwtService.extractPayload(INVALID_TOKEN))
-                    .isInstanceOf(InvalidTokenException.class)
-                    .hasMessage(ErrorMessage.INVALID_TOKEN_EXCEPTION.getMessage());
+                    .isInstanceOf(MalformedJwtException.class);
         }
 
         @Test
@@ -154,8 +156,7 @@ class JwtServiceTest {
 
             //when & then
             assertThatThrownBy(() -> jwtService.extractPayload(expiredToken.refreshToken()))
-                    .isInstanceOf(InvalidTokenException.class)
-                    .hasMessage(ErrorMessage.INVALID_TOKEN_EXCEPTION.getMessage());
+                    .isInstanceOf(ExpiredJwtException.class);
         }
     }
 }
