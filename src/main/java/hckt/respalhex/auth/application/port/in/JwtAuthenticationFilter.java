@@ -36,10 +36,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             Authentication authentication = getTokenInfoProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        // else 타는경우 doFIlter 내부에서 exception 후 CustomAuthenticationEntryPoint로 감
-        // 로그인 정상 > if문 안타고 chain.doFilter 타서 createToken?
-        // 토큰 정상인경우 >> 다음 필터로 넘어감
-        // 토큰 잘못된경우 try- catch문 타고서,, error
-        chain.doFilter(request, response); // 걸려있는 필터를 호출 시키는 메서드
+        chain.doFilter(request, response);
     }
 }

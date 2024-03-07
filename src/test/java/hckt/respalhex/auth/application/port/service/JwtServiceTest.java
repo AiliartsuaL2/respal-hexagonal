@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 
 @Transactional
 class JwtServiceTest {
-    JwtTokenProvider jwtTokenProvider = new JwtTokenProvider("secretKey", 360000, 1580000);
+    JwtTokenProvider jwtTokenProvider = new JwtTokenProvider("HCGJtechRespal", 360000, 1580000, mock(UserDetailServiceImpl.class));
     CommandRefreshTokenPort commandRefreshTokenPortMock = mock(CommandRefreshTokenPort.class);
     LoadRefreshTokenPort loadRefreshTokenPortMock = mock(LoadRefreshTokenPort.class);
     CreateTokenProvider createTokenProviderMock = jwtTokenProvider;
@@ -38,10 +38,7 @@ class JwtServiceTest {
         @Test
         @DisplayName("토큰 생성시 header, payload, signature이 .으로 나눠진다")
         void test1() {
-            //given
-
-
-            //when
+            //given & when
             Token token = jwtService.create(MEMBER_ID);
 
             //then
@@ -97,7 +94,7 @@ class JwtServiceTest {
         @DisplayName("만료일이 지난 토큰인 경우 예외 발생")
         void test4() {
             //given
-            CreateTokenProvider createTokenProvider = new JwtTokenProvider("secretKey", 0, 0);
+            CreateTokenProvider createTokenProvider = new JwtTokenProvider("secretKey", 0, 0, mock(UserDetailServiceImpl.class));
             JwtService jwtServiceMock = new JwtService(commandRefreshTokenPortMock, loadRefreshTokenPortMock,
                     createTokenProvider, getTokenInfoProviderMock);
             Token expiredToken = jwtServiceMock.create(MEMBER_ID);
@@ -150,7 +147,7 @@ class JwtServiceTest {
         @DisplayName("만료일이 지난 리프레시 토큰인 경우 예외 발생")
         void test4() {
             //given
-            CreateTokenProvider createTokenProvider = new JwtTokenProvider("secretKey", 0, 0);
+            CreateTokenProvider createTokenProvider = new JwtTokenProvider("secretKey", 0, 0, mock(UserDetailServiceImpl.class));
             JwtService jwtServiceMock = new JwtService(commandRefreshTokenPortMock, loadRefreshTokenPortMock,
                     createTokenProvider, getTokenInfoProviderMock);
             Token expiredToken = jwtServiceMock.create(MEMBER_ID);

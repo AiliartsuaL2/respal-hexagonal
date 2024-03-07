@@ -33,14 +33,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/v1.0.0/member").permitAll()
                 .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
+                .formLogin().disable()
                 .exceptionHandling()
                 .accessDeniedHandler(jwtAccessDeniedHandler)
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
-                // JwtAuthenticationFilter를 UserIdPasswordAuthenticationFilter 전에 넣는다 + 토큰에 저장된 유저정보를 활용하여야 하기 때문에 CustomUserDetailService 클래스를 생성
-                .addFilterBefore(new JwtAuthenticationFilter(getTokenInfoProvider), // 필터를 등록함, 파라미터 - 1번째 : 커스텀한 필터링, 2번쨰 : 필터링전 커스텀 필터링 수행
+                .addFilterBefore(new JwtAuthenticationFilter(getTokenInfoProvider),
                         UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtExceptionFilter,JwtAuthenticationFilter.class) // jwt 에러처리를 위한 필터등록
+                .addFilterBefore(jwtExceptionFilter,JwtAuthenticationFilter.class)
                 .httpBasic(withDefaults());
         return http.build();
     }

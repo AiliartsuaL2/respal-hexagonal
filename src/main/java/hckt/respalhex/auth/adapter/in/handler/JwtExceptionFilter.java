@@ -1,9 +1,8 @@
 package hckt.respalhex.auth.adapter.in.handler;
 
 import hckt.respalhex.auth.adapter.out.handler.JwtErrorResponseHandler;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
+import hckt.respalhex.auth.exception.NotRegisteredUserAccountException;
+import io.jsonwebtoken.*;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,8 +31,8 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             jwtErrorResponseHandler.generateJwtErrorResponse(response, ErrorMessage.MALFORMED_TOKEN_EXCEPTION);
         } catch (ExpiredJwtException e) {
             jwtErrorResponseHandler.generateJwtErrorResponse(response, ErrorMessage.EXPIRED_TOKEN_EXCEPTION);
-        } catch (IllegalArgumentException e) {
-            jwtErrorResponseHandler.generateJwtErrorResponse(response, ErrorMessage.INCORRECT_REFRESH_TOKEN_EXCEPTION);
+        } catch (NotRegisteredUserAccountException e) {
+            jwtErrorResponseHandler.generateJwtErrorResponse(response, ErrorMessage.INCORRECT_TOKEN_TYPE_EXCEPTION);
         }
     }
 }
