@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
+@Transactional
 class RefreshTokenPersistenceAdapterTest {
     @Autowired
     private RefreshTokenPersistenceAdapter refreshTokenPersistenceAdapter;
@@ -33,7 +35,7 @@ class RefreshTokenPersistenceAdapterTest {
             refreshTokenPersistenceAdapter.create(KEY_ID, REFRESH_TOKEN);
 
             // then
-            Optional<String> refreshTokenByKeyId = refreshTokenRepository.findRefreshTokenByKeyId(KEY_ID);
+            Optional<String> refreshTokenByKeyId = refreshTokenRepository.findTokenByKeyId(KEY_ID);
             assertThat(refreshTokenByKeyId).isPresent();
         }
 
@@ -75,7 +77,7 @@ class RefreshTokenPersistenceAdapterTest {
             refreshTokenPersistenceAdapter.delete(REFRESH_TOKEN);
 
             // then
-            Optional<String> refreshTokenByKeyId = refreshTokenRepository.findRefreshTokenByKeyId(KEY_ID);
+            Optional<String> refreshTokenByKeyId = refreshTokenRepository.findTokenByKeyId(KEY_ID);
             assertThat(refreshTokenByKeyId).isEmpty();
         }
 
@@ -102,7 +104,7 @@ class RefreshTokenPersistenceAdapterTest {
             refreshTokenPersistenceAdapter.create(KEY_ID, REFRESH_TOKEN);
 
             // when
-            Optional<String> refreshTokenByKeyId = refreshTokenRepository.findRefreshTokenByKeyId(KEY_ID);
+            Optional<String> refreshTokenByKeyId = refreshTokenRepository.findTokenByKeyId(KEY_ID);
 
             // then
             assertThat(refreshTokenByKeyId).isPresent();
@@ -117,7 +119,7 @@ class RefreshTokenPersistenceAdapterTest {
             // when & then
             assertThatThrownBy(() -> refreshTokenPersistenceAdapter.findByKeyId(refreshTokenNull))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage(ErrorMessage.NOT_EXIST_REFRESH_TOKEN_EXCEPTION.getMessage());
+                    .hasMessage(ErrorMessage.NOT_EXIST_KEY_ID_EXCEPTION.getMessage());
         }
     }
 }

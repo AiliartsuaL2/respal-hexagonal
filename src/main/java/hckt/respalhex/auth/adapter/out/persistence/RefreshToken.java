@@ -17,10 +17,10 @@ class RefreshToken {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long keyId;
-    private String refreshToken;
+    private String token;
 
-    public RefreshToken(Long keyId, String refreshToken) {
+    public RefreshToken(Long keyId, String token) {
         this.keyId = keyId;
-        this.refreshToken = refreshToken;
+        this.token = token;
     }
 }
