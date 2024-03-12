@@ -2,9 +2,9 @@ package hckt.respalhex.auth.application.port.service;
 
 import hckt.respalhex.auth.application.port.service.provider.CreateTokenProvider;
 import hckt.respalhex.auth.application.port.service.provider.GetTokenInfoProvider;
+import hckt.respalhex.auth.exception.ErrorMessage;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 @Component
 public class JwtTokenProvider implements CreateTokenProvider, GetTokenInfoProvider {
@@ -42,6 +43,10 @@ public class JwtTokenProvider implements CreateTokenProvider, GetTokenInfoProvid
     }
 
     private String createToken(final String payload, final Long validityInMilliseconds) {
+        if (ObjectUtils.isEmpty(payload)) {
+            throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_PAYLOAD_EXCEPTION.getMessage());
+        }
+
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
@@ -55,6 +60,10 @@ public class JwtTokenProvider implements CreateTokenProvider, GetTokenInfoProvid
 
     @Override
     public String getPayload(String token) {
+        if (ObjectUtils.isEmpty(token)) {
+            throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_PAYLOAD_EXCEPTION.getMessage());
+        }
+
         return Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)
@@ -71,7 +80,7 @@ public class JwtTokenProvider implements CreateTokenProvider, GetTokenInfoProvid
             return claims.getBody()
                     .getExpiration()
                     .after(new Date());
-        } catch (JwtException ex) {
+        } catch (RuntimeException ex) {
             return false;
         }
     }

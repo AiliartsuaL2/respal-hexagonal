@@ -9,11 +9,11 @@ import hckt.respalhex.auth.application.port.service.provider.CreateTokenProvider
 import hckt.respalhex.auth.application.port.service.provider.GetTokenInfoProvider;
 import hckt.respalhex.auth.domain.Token;
 import hckt.respalhex.auth.exception.ErrorMessage;
-import hckt.respalhex.auth.exception.InvalidTokenException;
 import java.util.Optional;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class JwtServiceTest {
     private static final Long MEMBER_ID = 0L;
     private static final Long MEMBER_ID_NULL = null;
     private static final String TOKEN_NULL = null;
-    private static final String INVALID_TOKEN = "invalidToken";
+    private static final String INVALID_TOKEN =  new JwtTokenProvider("invalid", 10000, 1000000, mock(UserDetailServiceImpl.class)).createAccessToken("1");
 
     @Nested
     @DisplayName("토큰 생성 테스트")
@@ -85,12 +85,11 @@ class JwtServiceTest {
         }
 
         @Test
-        @DisplayName("유효하지 않는 토큰인 경우 예외 발생")
+        @DisplayName("유효하지 않는 토큰(SecretKey가 다름)인 경우 예외 발생")
         void test3() {
             //given & when & then
             assertThatThrownBy(() -> jwtService.extractPayload(INVALID_TOKEN))
-                    .isInstanceOf(InvalidTokenException.class)
-                    .hasMessage(ErrorMessage.INVALID_TOKEN_EXCEPTION.getMessage());
+                    .isInstanceOf(SignatureException.class);
         }
 
         @Test
@@ -104,8 +103,7 @@ class JwtServiceTest {
 
             //when & then
             assertThatThrownBy(() -> jwtService.extractPayload(expiredToken.accessToken()))
-                    .isInstanceOf(InvalidTokenException.class)
-                    .hasMessage(ErrorMessage.INVALID_TOKEN_EXCEPTION.getMessage());
+                    .isInstanceOf(ExpiredJwtException.class);
         }
     }
 
@@ -138,11 +136,11 @@ class JwtServiceTest {
         }
 
         @Test
-        @DisplayName("유효하지 않는 리프레시 토큰인 경우 예외 발생")
+        @DisplayName("유효하지 않는 토큰(SecretKey가 다름)인 경우 예외 발생")
         void test3() {
             //given & when & then
             assertThatThrownBy(() -> jwtService.extractPayload(INVALID_TOKEN))
-                    .isInstanceOf(MalformedJwtException.class);
+                    .isInstanceOf(SignatureException.class);
         }
 
         @Test

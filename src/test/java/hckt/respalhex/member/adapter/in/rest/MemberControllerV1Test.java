@@ -6,6 +6,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hckt.respalhex.auth.adapter.in.handler.JwtExceptionFilter;
+import hckt.respalhex.auth.adapter.out.handler.JwtAccessDeniedHandler;
+import hckt.respalhex.auth.adapter.out.handler.JwtAuthenticationEntryPoint;
+import hckt.respalhex.global.config.SecurityConfig;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import hckt.respalhex.member.application.port.in.GetMemberUseCase;
 import hckt.respalhex.member.application.port.in.PostMemberUseCase;
@@ -16,11 +20,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(controllers = MemberControllerV1.class)
 @AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = MemberControllerV1.class,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = JwtExceptionFilter.class),
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = JwtAccessDeniedHandler.class),
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = JwtAuthenticationEntryPoint.class)}
+)
 class MemberControllerV1Test {
     @Autowired
     private MockMvc mockMvc;

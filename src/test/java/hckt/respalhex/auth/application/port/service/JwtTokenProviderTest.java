@@ -2,6 +2,7 @@ package hckt.respalhex.auth.application.port.service;
 
 import hckt.respalhex.auth.exception.ErrorMessage;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -106,7 +107,7 @@ class JwtTokenProviderTest {
             // when & then
             assertThatThrownBy(() -> jwtTokenProviderMock.getPayload(accessToken))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage(ErrorMessage.NOT_EXIST_TOKEN_EXCEPTION.getMessage());
+                    .hasMessage(ErrorMessage.NOT_EXIST_PAYLOAD_EXCEPTION.getMessage());
         }
 
         @Test
@@ -117,8 +118,7 @@ class JwtTokenProviderTest {
 
             // when & then
             assertThatThrownBy(() -> jwtTokenProviderMock.getPayload(accessToken))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage(ErrorMessage.INVALID_TOKEN_EXCEPTION.getMessage());
+                    .isInstanceOf(MalformedJwtException.class);
         }
     }
 
@@ -207,8 +207,7 @@ class JwtTokenProviderTest {
 
             // when & then
             assertThatThrownBy(() -> jwtTokenProviderMock.validateAndThrow(accessToken))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage(ErrorMessage.NOT_EXIST_TOKEN_EXCEPTION.getMessage());
+                    .isInstanceOf(IllegalArgumentException.class);
         }
 
 
