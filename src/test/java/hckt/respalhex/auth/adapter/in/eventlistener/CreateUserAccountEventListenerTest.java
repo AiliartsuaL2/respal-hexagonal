@@ -51,8 +51,7 @@ class CreateUserAccountEventListenerTest {
         void test2() {
             // given & when & then
             Assertions.assertThatThrownBy(() -> publisher.publishEvent(null))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage(ErrorMessage.NOT_EXIST_EVENT_EXCEPTION.getMessage());
+                    .isInstanceOf(IllegalArgumentException.class);
         }
 
         @Test

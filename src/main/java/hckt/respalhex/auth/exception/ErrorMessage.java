@@ -20,8 +20,6 @@ public enum ErrorMessage {
     NOT_EXIST_USER_ACCOUNT_EXCEPTION(HttpStatus.UNAUTHORIZED, "사용자 계정이 존재하지 않아요"),
     NOT_EXIST_ROLE_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "Role Type이 존재하지 않아요");
 
-
-
     private final HttpStatus httpStatus;
     private final String message;
 }
