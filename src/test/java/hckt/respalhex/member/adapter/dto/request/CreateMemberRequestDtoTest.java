@@ -1,15 +1,13 @@
 package hckt.respalhex.member.adapter.dto.request;
 
-import hckt.respalhex.global.exception.ErrorMessage;
+import hckt.respalhex.member.exception.ErrorMessage;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CreateMemberRequestDtoTest {
     @Nested

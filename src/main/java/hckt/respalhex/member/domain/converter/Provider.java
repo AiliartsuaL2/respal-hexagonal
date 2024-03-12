@@ -1,7 +1,7 @@
 package hckt.respalhex.member.domain.converter;
 
 import hckt.respalhex.global.converter.BaseEnumCode;
-import hckt.respalhex.global.exception.ErrorMessage;
+import hckt.respalhex.member.exception.ErrorMessage;
 
 public enum Provider implements BaseEnumCode<String> {
     KAKAO("kakao"),

@@ -1,7 +1,8 @@
 package hckt.respalhex.member.application.service;
 
 import hckt.respalhex.global.annotation.UseCase;
-import hckt.respalhex.global.exception.ErrorMessage;
+import hckt.respalhex.global.event.CreateUserAccountEvent;
+import hckt.respalhex.member.exception.ErrorMessage;
 import hckt.respalhex.member.application.dto.response.GetMemberResponseDto;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import hckt.respalhex.member.application.port.in.GetMemberUseCase;
@@ -12,6 +13,7 @@ import hckt.respalhex.member.domain.Member;
 import hckt.respalhex.member.domain.OAuth;
 import hckt.respalhex.member.domain.converter.Provider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
 @UseCase
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 class MemberService implements PostMemberUseCase, GetMemberUseCase {
     private final LoadMemberPort loadMemberPort;
     private final CommandMemberPort commandMemberPort;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -34,6 +37,7 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase {
         member.addOAuth(oAuth);
 
         commandMemberPort.create(member);
+        eventPublisher.publishEvent(new CreateUserAccountEvent(member.getId(), "user"));
     }
 
     @Override

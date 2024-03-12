@@ -2,7 +2,7 @@ package hckt.respalhex.member.domain.converter;
 
 import static org.assertj.core.api.Assertions.*;
 
-import hckt.respalhex.global.exception.ErrorMessage;
+import hckt.respalhex.member.exception.ErrorMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
