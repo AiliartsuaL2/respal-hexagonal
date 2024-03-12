@@ -1,5 +1,6 @@
 package hckt.respalhex.member.application.service;
 
+import hckt.respalhex.global.event.CreateUserAccountEvent;
 import hckt.respalhex.member.exception.ErrorMessage;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import hckt.respalhex.member.application.port.out.CommandMemberPort;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -22,7 +25,8 @@ import static org.mockito.Mockito.*;
 class MemberServiceTest {
     private final LoadMemberPort loadMemberPort = mock(LoadMemberPort.class);
     private final CommandMemberPort commandMemberPort = mock(CommandMemberPort.class);
-    private final MemberService memberService = new MemberService(loadMemberPort, commandMemberPort);
+    private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
+    private final MemberService memberService = new MemberService(loadMemberPort, commandMemberPort, applicationEventPublisher);
 
     private static final String EMAIL = "email";
     private static final String NICKNAME = "nickname";
@@ -100,6 +104,25 @@ class MemberServiceTest {
             assertThatThrownBy(() -> memberService.create(requestDto))
                     .isInstanceOf(IllegalStateException.class)
                     .hasMessage(ErrorMessage.ALREADY_EXIST_MEMBER_EMAIL_EXCEPTION.getMessage());
+        }
+
+        @Test
+        @DisplayName("회원 생성시 이벤트 발행")
+        void test4() {
+            // given
+            PostMemberRequestDto requestDto = PostMemberRequestDto.builder()
+                    .email(EMAIL)
+                    .password(PASSWORD)
+                    .nickname(NICKNAME)
+                    .picture(PICTURE)
+                    .provider(PROVIDER_COMMON)
+                    .build();
+
+            // when
+            memberService.create(requestDto);
+
+            // then
+            then(applicationEventPublisher).should(times(1)).publishEvent(isA(CreateUserAccountEvent.class));
         }
     }
 }
