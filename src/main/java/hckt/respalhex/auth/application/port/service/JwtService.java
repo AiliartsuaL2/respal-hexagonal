@@ -1,10 +1,14 @@
 package hckt.respalhex.auth.application.port.service;
 
+import hckt.respalhex.auth.application.dto.request.LogInRequestDto;
+import hckt.respalhex.auth.application.dto.response.LogInResponseDto;
 import hckt.respalhex.auth.application.port.in.CreateTokenUseCase;
 import hckt.respalhex.auth.application.port.in.ExtractPayloadUseCase;
 import hckt.respalhex.auth.application.port.in.RenewAccessTokenUseCase;
+import hckt.respalhex.auth.application.port.in.SignInUseCase;
 import hckt.respalhex.auth.application.port.out.CommandRefreshTokenPort;
 import hckt.respalhex.auth.application.port.out.LoadRefreshTokenPort;
+import hckt.respalhex.auth.application.port.out.LoadMemberInfoPort;
 import hckt.respalhex.auth.application.port.service.provider.CreateTokenProvider;
 import hckt.respalhex.auth.application.port.service.provider.GetTokenInfoProvider;
 import hckt.respalhex.auth.domain.Token;
@@ -13,17 +17,21 @@ import hckt.respalhex.auth.exception.ErrorMessage;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 @RequiredArgsConstructor
 @Service
-public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, RenewAccessTokenUseCase {
+@Transactional(readOnly = true)
+public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, RenewAccessTokenUseCase, SignInUseCase {
     private final CommandRefreshTokenPort commandRefreshTokenPort;
     private final LoadRefreshTokenPort loadRefreshTokenPort;
+    private final LoadMemberInfoPort loadMemberInfoPort;
     private final CreateTokenProvider createTokenProvider;
     private final GetTokenInfoProvider getTokenInfoProvider;
 
     @Override
+    @Transactional
     public Token create(Long memberId) {
         if (ObjectUtils.isEmpty(memberId)) {
             throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_MEMBER_ID_EXCEPTION.getMessage());
@@ -59,6 +67,7 @@ public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, Re
         return createTokenProvider.createAccessToken(String.valueOf(memberId));
     }
 
+    @Transactional
     private String createRefreshToken(Long memberId) {
         Optional<String> foundRefreshToken = loadRefreshTokenPort.findByKeyId(memberId);
         if (foundRefreshToken.isPresent()) {
@@ -71,5 +80,14 @@ public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, Re
         String refreshToken = createTokenProvider.createRefreshToken(String.valueOf(memberId));
         commandRefreshTokenPort.create(memberId, refreshToken);
         return refreshToken;
+    }
+
+    // 회원 도메인과 통신하여 회원 아이디 조회 후 토큰 발급
+    @Override
+    @Transactional
+    public LogInResponseDto signIn(LogInRequestDto requestDto) {
+        Long memberId = loadMemberInfoPort.signIn(requestDto.email(), requestDto.password());
+        Token token = this.create(memberId);
+        return LogInResponseDto.create(token);
     }
 }
