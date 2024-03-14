@@ -20,8 +20,8 @@ class MemberPersistenceAdapter implements LoadMemberPort, CommandMemberPort {
     }
 
     @Override
-    public Optional<Member> loadMember(Long id) {
-        return memberRepository.findById(id);
+    public Optional<Member> loadMemberByEmail(String email) {
+        return memberRepository.findMemberByEmail(email);
     }
 
     @Override

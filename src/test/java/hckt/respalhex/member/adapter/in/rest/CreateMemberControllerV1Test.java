@@ -9,9 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hckt.respalhex.auth.adapter.in.handler.JwtExceptionFilter;
 import hckt.respalhex.auth.adapter.out.handler.JwtAccessDeniedHandler;
 import hckt.respalhex.auth.adapter.out.handler.JwtAuthenticationEntryPoint;
-import hckt.respalhex.global.config.SecurityConfig;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
-import hckt.respalhex.member.application.port.in.GetMemberUseCase;
+import hckt.respalhex.member.application.port.in.signinMemberUseCase;
 import hckt.respalhex.member.application.port.in.PostMemberUseCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -26,20 +25,20 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(controllers = MemberControllerV1.class,
+@WebMvcTest(controllers = CreateMemberControllerV1.class,
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = JwtExceptionFilter.class),
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = JwtAccessDeniedHandler.class),
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = JwtAuthenticationEntryPoint.class)}
 )
-class MemberControllerV1Test {
+class CreateMemberControllerV1Test {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private PostMemberUseCase postMemberUseCase;
     @MockBean
-    private GetMemberUseCase getMemberUseCase;
+    private signinMemberUseCase signinMemberUseCase;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Nested
