@@ -15,6 +15,8 @@ import hckt.respalhex.auth.domain.Token;
 import hckt.respalhex.auth.exception.InvalidTokenException;
 import hckt.respalhex.auth.exception.ErrorMessage;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +69,6 @@ public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, Re
         return createTokenProvider.createAccessToken(String.valueOf(memberId));
     }
 
-    @Transactional
     private String createRefreshToken(Long memberId) {
         Optional<String> foundRefreshToken = loadRefreshTokenPort.findByKeyId(memberId);
         if (foundRefreshToken.isPresent()) {
@@ -86,8 +87,12 @@ public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, Re
     @Override
     @Transactional
     public LogInResponseDto signIn(LogInRequestDto requestDto) {
-        Long memberId = loadMemberInfoPort.signIn(requestDto.email(), requestDto.password());
-        Token token = this.create(memberId);
-        return LogInResponseDto.create(token);
+        try {
+            Long memberId = loadMemberInfoPort.signIn(requestDto.email(), requestDto.password());
+            Token token = this.create(memberId);
+            return LogInResponseDto.create(token);
+        } catch (TimeoutException ex) {
+            throw new IllegalArgumentException(ErrorMessage.INVALID_MEMBER_EXCEPTION.getMessage());
+        }
     }
 }

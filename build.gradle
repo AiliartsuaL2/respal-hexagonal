@@ -51,6 +51,13 @@ dependencies {
     // spring security
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security:spring-security-test'
+
+    // aws sqs
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
+
+    // aws temporary queue
+    implementation 'com.amazonaws:amazon-sqs-java-temporary-queues-client:2.0.1'
 }
 
 tasks.named('test') {

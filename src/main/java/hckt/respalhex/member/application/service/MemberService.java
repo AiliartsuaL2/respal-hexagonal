@@ -2,6 +2,7 @@ package hckt.respalhex.member.application.service;
 
 import hckt.respalhex.global.annotation.UseCase;
 import hckt.respalhex.global.event.CreateUserAccountEvent;
+import hckt.respalhex.member.application.port.in.SignInUseCase;
 import hckt.respalhex.member.exception.ErrorMessage;
 import hckt.respalhex.member.application.dto.response.GetMemberResponseDto;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @UseCase
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-class MemberService implements PostMemberUseCase, GetMemberUseCase {
+class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCase {
     private final LoadMemberPort loadMemberPort;
     private final CommandMemberPort commandMemberPort;
     private final ApplicationEventPublisher eventPublisher;
@@ -45,6 +46,16 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase {
         Member member = loadMemberPort.loadMember(id)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXIST_MEMBER_EXCEPTION.getMessage()));
         return new GetMemberResponseDto(member.getEmail());
+    }
+
+    @Override
+    public Long signIn(String email, String password) {
+        Member member = loadMemberPort.loadMemberByEmailAndProvider(email, Provider.COMMON)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXIST_MEMBER_EXCEPTION.getMessage()));
+        if (member.matchPassword(password)) {
+            return member.getId();
+        }
+        return null;
     }
 }
 
