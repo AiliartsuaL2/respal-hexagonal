@@ -1,5 +1,7 @@
 package hckt.respalhex.global.config;
 
+import com.amazonaws.services.sqs.util.SQSMessageConsumer;
+import com.amazonaws.services.sqs.util.SQSMessageConsumerBuilder;
 import io.awspring.cloud.sqs.config.SqsBootstrapConfiguration;
 import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory;
 import io.awspring.cloud.sqs.operations.SqsTemplate;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Import;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
+import software.amazon.awssdk.services.sqs.SqsClient;
 
 @Import(SqsBootstrapConfiguration.class)
 @Configuration
@@ -23,6 +26,8 @@ public class AwsSqsConfig {
 
     @Value("${spring.cloud.aws.region.static}")
     private String AWS_REGION;
+    @Value("${sqs.signin.request}")
+    private String requestQueueUrl;
 
     // 클라이언트 설정: region과 자격증명
     @Bean
@@ -34,6 +39,23 @@ public class AwsSqsConfig {
                         return AWS_ACCESS_KEY;
                     }
 
+                    @Override
+                    public String secretAccessKey() {
+                        return AWS_SECRET_KEY;
+                    }
+                })
+                .region(Region.of(AWS_REGION))
+                .build();
+    }
+
+    @Bean
+    public SqsClient sqsClient() {
+        return SqsClient.builder()
+                .credentialsProvider(() -> new AwsCredentials() {
+                    @Override
+                    public String accessKeyId() {
+                        return AWS_ACCESS_KEY;
+                    }
                     @Override
                     public String secretAccessKey() {
                         return AWS_SECRET_KEY;
