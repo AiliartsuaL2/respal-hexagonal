@@ -3,6 +3,7 @@ package hckt.respalhex.member.application.service;
 import hckt.respalhex.global.annotation.UseCase;
 import hckt.respalhex.global.event.CreateUserAccountEvent;
 import hckt.respalhex.member.application.port.in.SignInUseCase;
+import hckt.respalhex.member.application.port.out.CommandOAuthPort;
 import hckt.respalhex.member.exception.ErrorMessage;
 import hckt.respalhex.member.application.dto.response.GetMemberResponseDto;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCase {
     private final LoadMemberPort loadMemberPort;
     private final CommandMemberPort commandMemberPort;
+    private final CommandOAuthPort commandOAuthPort;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
@@ -38,6 +40,7 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCas
         member.addOAuth(oAuth);
 
         commandMemberPort.create(member);
+        commandOAuthPort.create(oAuth);
         eventPublisher.publishEvent(new CreateUserAccountEvent(member.getId(), "user"));
     }
 

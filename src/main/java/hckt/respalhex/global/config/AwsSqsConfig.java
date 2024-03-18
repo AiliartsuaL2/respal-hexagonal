@@ -1,7 +1,5 @@
 package hckt.respalhex.global.config;
 
-import com.amazonaws.services.sqs.util.SQSMessageConsumer;
-import com.amazonaws.services.sqs.util.SQSMessageConsumerBuilder;
 import io.awspring.cloud.sqs.config.SqsBootstrapConfiguration;
 import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory;
 import io.awspring.cloud.sqs.operations.SqsTemplate;

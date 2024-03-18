@@ -3,9 +3,10 @@ package hckt.respalhex.member.adapter.in.message;
 import com.amazonaws.services.sqs.AmazonSQSResponder;
 import com.amazonaws.services.sqs.AmazonSQSResponderClientBuilder;
 import com.amazonaws.services.sqs.MessageContent;
+import com.google.gson.Gson;
 import hckt.respalhex.global.annotation.MessageQueue;
+import hckt.respalhex.member.adapter.dto.request.LoginMemberRequestDto;
 import hckt.respalhex.member.application.port.in.SignInUseCase;
-import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.Message;
 import io.awspring.cloud.sqs.annotation.SqsListener;
@@ -21,17 +22,22 @@ public class LoginMemberMessageListener {
     }
 
     @SqsListener("${spring.cloud.aws.sqs.queue-name}")
-    public void messageListener(String message) {
-        System.out.println("Listener: " + message);
+    public void messageListener(Message message) {
+        handleLoginRequest(message);
     }
 
     public void handleLoginRequest(Message message) {
+
         // Process the login and return a serialized result.
         String body = message.body();
-        Long memberId = signInUseCase.signIn(body, body);
+
+        Gson gson = new Gson();
+        LoginMemberRequestDto requestDto = gson.fromJson(body, LoginMemberRequestDto.class);
+        Long memberId = signInUseCase.signIn(requestDto.email(), requestDto.password());
 
         // Extract the URL of the temporary queue from the message attribute
         // and send the response to the temporary queue.
         sqsResponder.sendResponseMessage(MessageContent.fromMessage(message),new MessageContent(String.valueOf(memberId)));
+        sqsResponder.shutdown();
     }
 }

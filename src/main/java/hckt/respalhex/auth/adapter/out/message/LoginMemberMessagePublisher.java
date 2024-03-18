@@ -4,11 +4,7 @@ import com.amazonaws.services.sqs.AmazonSQSRequester;
 import com.amazonaws.services.sqs.AmazonSQSRequesterClientBuilder;
 import hckt.respalhex.auth.application.port.out.LoadMemberInfoPort;
 import hckt.respalhex.global.annotation.MessageQueue;
-import io.awspring.cloud.sqs.operations.SendResult;
-import io.awspring.cloud.sqs.operations.SqsTemplate;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
-import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
@@ -39,7 +35,8 @@ class LoginMemberMessagePublisher implements LoadMemberInfoPort {
                 .messageBody(body)
                 .build();
 
-        Message reply = sqsRequester.sendMessageAndGetResponse(request,20, TimeUnit.SECONDS);
+        Message reply = sqsRequester.sendMessageAndGetResponse(request,2, TimeUnit.SECONDS);
+        sqsRequester.shutdown();
         return Long.parseLong(reply.body());
     }
 }
