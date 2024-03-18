@@ -3,6 +3,8 @@ package hckt.respalhex.auth.application.port.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import hckt.respalhex.auth.application.dto.request.LogInRequestDto;
+import hckt.respalhex.auth.application.dto.response.LogInResponseDto;
 import hckt.respalhex.auth.application.port.out.CommandRefreshTokenPort;
 import hckt.respalhex.auth.application.port.out.LoadMemberInfoPort;
 import hckt.respalhex.auth.application.port.out.LoadRefreshTokenPort;
@@ -11,13 +13,16 @@ import hckt.respalhex.auth.application.port.service.provider.GetTokenInfoProvide
 import hckt.respalhex.auth.domain.Token;
 import hckt.respalhex.auth.exception.ErrorMessage;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.messaging.MessagingException;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.awscore.exception.AwsServiceException;
 
 import static org.mockito.Mockito.*;
 
@@ -31,6 +36,8 @@ class JwtServiceTest {
     GetTokenInfoProvider getTokenInfoProviderMock = jwtTokenProvider;
     JwtService jwtService = new JwtService(commandRefreshTokenPortMock, loadRefreshTokenPortMock, createTokenProviderMock, getTokenInfoProviderMock, loadMemberInfoPortMock);
 
+    private static final String EMAIL = "test@gmail.com";
+    private static final String PASSWORD = "password";
     private static final Long MEMBER_ID = 0L;
     private static final Long MEMBER_ID_NULL = null;
     private static final String TOKEN_NULL = null;
@@ -156,6 +163,54 @@ class JwtServiceTest {
             //when & then
             assertThatThrownBy(() -> jwtService.extractPayload(expiredToken.refreshToken()))
                     .isInstanceOf(ExpiredJwtException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("로그인 테스트")
+    class SignInTest {
+        @Test
+        @DisplayName("정상 로그인시 토큰 발급")
+        void test1() throws TimeoutException {
+            // given
+            LogInRequestDto logInRequestDto = new LogInRequestDto(EMAIL, PASSWORD);
+            when(loadMemberInfoPortMock.signIn(logInRequestDto)).thenReturn(MEMBER_ID);
+
+            // when
+            LogInResponseDto logInResponseDto = jwtService.signIn(logInRequestDto);
+
+            // then
+            assertThat(logInResponseDto.accessToken().split("\\.").length).isEqualTo(3);
+            assertThat(logInResponseDto.refreshToken().split("\\.").length).isEqualTo(3);
+
+            Long memberId = jwtService.extractPayload(logInResponseDto.accessToken());
+            assertThat(memberId).isEqualTo(MEMBER_ID);
+        }
+
+        @Test
+        @DisplayName("loadMemberInfoPort.signIn() TimeOutException 발생시 MessagingException 발생")
+        void test2() throws TimeoutException {
+            // given
+            LogInRequestDto logInRequestDto = new LogInRequestDto(EMAIL, PASSWORD);
+            when(loadMemberInfoPortMock.signIn(logInRequestDto)).thenThrow(TimeoutException.class);
+
+            // when & then
+            assertThatThrownBy(() -> jwtService.signIn(logInRequestDto))
+                    .isInstanceOf(MessagingException.class)
+                    .hasMessage(ErrorMessage.COMMUNICTION_EXCEPTION.getMessage());
+        }
+
+        @Test
+        @DisplayName("loadMemberInfoPort.signIn() null 반환 시 IAE 발생")
+        void test3() throws TimeoutException {
+            // given
+            LogInRequestDto logInRequestDto = new LogInRequestDto(EMAIL, PASSWORD);
+            when(loadMemberInfoPortMock.signIn(logInRequestDto)).thenReturn(null);
+
+            // when & then
+            assertThatThrownBy(() -> jwtService.signIn(logInRequestDto))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage(ErrorMessage.INVALID_MEMBER_EXCEPTION.getMessage());
         }
     }
 }

@@ -4,6 +4,7 @@ import hckt.respalhex.auth.adapter.dto.response.SignInResponseDto;
 import hckt.respalhex.auth.adapter.dto.request.SignInRequestDto;
 import hckt.respalhex.auth.application.dto.response.LogInResponseDto;
 import hckt.respalhex.auth.application.port.in.SignInUseCase;
+import hckt.respalhex.global.dto.ApiCommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,11 +18,11 @@ class SignInApiV1 {
     private final SignInUseCase signInUseCase;
 
     @PostMapping("/v1.0.0/signin")
-    SignInResponseDto signIn(
+    ApiCommonResponse<SignInResponseDto> signIn(
             @RequestBody
             SignInRequestDto requestDto
     ) {
         LogInResponseDto logInResponseDto = signInUseCase.signIn(requestDto.convertToApplicationDto());
-        return new SignInResponseDto(logInResponseDto.accessToken(), logInResponseDto.refreshToken());
+        return new ApiCommonResponse<>(true, new SignInResponseDto(logInResponseDto.accessToken(), logInResponseDto.refreshToken()));
     }
 }
