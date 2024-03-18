@@ -22,7 +22,8 @@ public enum ErrorMessage {
     NOT_EXIST_TOKEN_EXCEPTION(HttpStatus.BAD_REQUEST, "토큰이 존재하지 않아요"),
     NOT_EXIST_KEY_ID_EXCEPTION(HttpStatus.BAD_REQUEST, "keyId가 존재하지 않아요"),
     NOT_EXIST_ROLE_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "Role Type이 존재하지 않아요"),
-    INVALID_MEMBER_EXCEPTION(HttpStatus.BAD_REQUEST, "회원 정보가 일치하지 않아요");
+    INVALID_MEMBER_EXCEPTION(HttpStatus.BAD_REQUEST, "회원 정보가 일치하지 않아요"),
+    COMMUNICATION_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "서버 통신 중 에러가 발생했어요");
 
     private final HttpStatus httpStatus;
     private final String message;

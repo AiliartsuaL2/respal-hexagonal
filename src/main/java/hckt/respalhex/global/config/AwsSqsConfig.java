@@ -1,5 +1,9 @@
 package hckt.respalhex.global.config;
 
+import com.amazonaws.services.sqs.AmazonSQSRequester;
+import com.amazonaws.services.sqs.AmazonSQSRequesterClientBuilder;
+import com.amazonaws.services.sqs.AmazonSQSResponder;
+import com.amazonaws.services.sqs.AmazonSQSResponderClientBuilder;
 import io.awspring.cloud.sqs.config.SqsBootstrapConfiguration;
 import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory;
 import io.awspring.cloud.sqs.operations.SqsTemplate;
@@ -7,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.Order;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
@@ -27,7 +32,7 @@ public class AwsSqsConfig {
     @Value("${sqs.signin.request}")
     private String requestQueueUrl;
 
-    // 클라이언트 설정: region과 자격증명
+    // sqs Client For Async
     @Bean
     public SqsAsyncClient sqsAsyncClient() {
         return SqsAsyncClient.builder()
@@ -46,6 +51,7 @@ public class AwsSqsConfig {
                 .build();
     }
 
+    // sqs Client For Sync
     @Bean
     public SqsClient sqsClient() {
         return SqsClient.builder()
@@ -63,17 +69,33 @@ public class AwsSqsConfig {
                 .build();
     }
 
-    // Listener Factory 설정 (Listener 쪽)
+    // Sync Aws Publisher
+    @Bean
+    public AmazonSQSRequester publisherFactory() {
+        return AmazonSQSRequesterClientBuilder.standard()
+                .withAmazonSQS(sqsClient())
+                .build();
+    }
+
+    // Sync Aws Consumer
+    @Bean
+    public AmazonSQSResponder consumerFactory() {
+        return AmazonSQSResponderClientBuilder.standard()
+                .withAmazonSQS(sqsClient())
+                .build();
+    }
+
+    // Async Aws Publisher
+    @Bean
+    public SqsTemplate sqsTemplate() {
+        return SqsTemplate.newTemplate(sqsAsyncClient());
+    }
+
+    // Async Aws Consumer
     @Bean
     public SqsMessageListenerContainerFactory<Object> defaultSqsListenerContainerFactory() {
         return SqsMessageListenerContainerFactory.builder()
                 .sqsAsyncClient(sqsAsyncClient())
                 .build();
-    }
-
-    // 메시지 발송을 위한 SQS 템플릿 설정 (Sender 쪽)
-    @Bean
-    public SqsTemplate sqsTemplate() {
-        return SqsTemplate.newTemplate(sqsAsyncClient());
     }
 }

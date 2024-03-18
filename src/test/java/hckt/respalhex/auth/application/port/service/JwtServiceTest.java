@@ -197,7 +197,7 @@ class JwtServiceTest {
             // when & then
             assertThatThrownBy(() -> jwtService.signIn(logInRequestDto))
                     .isInstanceOf(MessagingException.class)
-                    .hasMessage(ErrorMessage.COMMUNICTION_EXCEPTION.getMessage());
+                    .hasMessage(ErrorMessage.COMMUNICATION_EXCEPTION.getMessage());
         }
 
         @Test
