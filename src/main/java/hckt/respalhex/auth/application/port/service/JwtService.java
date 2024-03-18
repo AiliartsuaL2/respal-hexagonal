@@ -28,9 +28,9 @@ import org.springframework.util.ObjectUtils;
 public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, RenewAccessTokenUseCase, SignInUseCase {
     private final CommandRefreshTokenPort commandRefreshTokenPort;
     private final LoadRefreshTokenPort loadRefreshTokenPort;
-    private final LoadMemberInfoPort loadMemberInfoPort;
     private final CreateTokenProvider createTokenProvider;
     private final GetTokenInfoProvider getTokenInfoProvider;
+    private final LoadMemberInfoPort loadMemberInfoPort;
 
     @Override
     @Transactional
@@ -69,6 +69,19 @@ public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, Re
         return createTokenProvider.createAccessToken(String.valueOf(memberId));
     }
 
+    // 회원 도메인과 통신하여 회원 아이디 조회 후 토큰 발급
+    @Override
+    @Transactional
+    public LogInResponseDto signIn(LogInRequestDto requestDto) {
+        try {
+            Long memberId = loadMemberInfoPort.signIn(requestDto);
+            Token token = this.create(memberId);
+            return LogInResponseDto.create(token);
+        } catch (TimeoutException ex) {
+            throw new IllegalArgumentException(ex.getMessage());
+        }
+    }
+
     private String createRefreshToken(Long memberId) {
         Optional<String> foundRefreshToken = loadRefreshTokenPort.findByKeyId(memberId);
         if (foundRefreshToken.isPresent()) {
@@ -81,18 +94,5 @@ public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, Re
         String refreshToken = createTokenProvider.createRefreshToken(String.valueOf(memberId));
         commandRefreshTokenPort.create(memberId, refreshToken);
         return refreshToken;
-    }
-
-    // 회원 도메인과 통신하여 회원 아이디 조회 후 토큰 발급
-    @Override
-    @Transactional
-    public LogInResponseDto signIn(LogInRequestDto requestDto) {
-        try {
-            Long memberId = loadMemberInfoPort.signIn(requestDto.email(), requestDto.password());
-            Token token = this.create(memberId);
-            return LogInResponseDto.create(token);
-        } catch (TimeoutException ex) {
-            throw new IllegalArgumentException(ErrorMessage.INVALID_MEMBER_EXCEPTION.getMessage());
-        }
     }
 }

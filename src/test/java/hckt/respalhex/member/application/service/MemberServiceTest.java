@@ -1,6 +1,7 @@
 package hckt.respalhex.member.application.service;
 
 import hckt.respalhex.global.event.CreateUserAccountEvent;
+import hckt.respalhex.member.application.port.out.CommandOAuthPort;
 import hckt.respalhex.member.exception.ErrorMessage;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import hckt.respalhex.member.application.port.out.CommandMemberPort;
@@ -25,8 +26,9 @@ import static org.mockito.Mockito.*;
 class MemberServiceTest {
     private final LoadMemberPort loadMemberPort = mock(LoadMemberPort.class);
     private final CommandMemberPort commandMemberPort = mock(CommandMemberPort.class);
+    private final CommandOAuthPort commandOAuthPort = mock(CommandOAuthPort.class);
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
-    private final MemberService memberService = new MemberService(loadMemberPort, commandMemberPort, applicationEventPublisher);
+    private final MemberService memberService = new MemberService(loadMemberPort, commandMemberPort, commandOAuthPort, applicationEventPublisher);
 
     private static final String EMAIL = "email";
     private static final String NICKNAME = "nickname";

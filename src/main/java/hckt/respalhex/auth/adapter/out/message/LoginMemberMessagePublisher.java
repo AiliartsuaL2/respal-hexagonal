@@ -2,6 +2,8 @@ package hckt.respalhex.auth.adapter.out.message;
 
 import com.amazonaws.services.sqs.AmazonSQSRequester;
 import com.amazonaws.services.sqs.AmazonSQSRequesterClientBuilder;
+import com.google.gson.Gson;
+import hckt.respalhex.auth.application.dto.request.LogInRequestDto;
 import hckt.respalhex.auth.application.port.out.LoadMemberInfoPort;
 import hckt.respalhex.global.annotation.MessageQueue;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,8 +30,8 @@ class LoginMemberMessagePublisher implements LoadMemberInfoPort {
 
     @Override
     // 회원 도메인과 통신하여 memberId를 가져온다.
-    public Long signIn(String email, String password) throws TimeoutException {
-        String body = "{email: " + email + ", password: " + password + "}";
+    public Long signIn(LogInRequestDto requestDto) throws TimeoutException {
+        String body = new Gson().toJson(requestDto);
         SendMessageRequest request = SendMessageRequest.builder()
                 .queueUrl(requestQueueUrl)
                 .messageBody(body)

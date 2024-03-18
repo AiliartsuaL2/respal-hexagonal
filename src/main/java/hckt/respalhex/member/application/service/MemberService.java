@@ -58,7 +58,7 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCas
         if (member.matchPassword(password)) {
             return member.getId();
         }
-        return null;
+        throw new IllegalArgumentException(ErrorMessage.NOT_MATCH_PASSWORD_EXCEPTION.getMessage());
     }
 }
 
