@@ -55,10 +55,10 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCas
     public Long signIn(String email, String password) {
         Member member = loadMemberPort.loadMemberByEmailAndProvider(email, Provider.COMMON)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXIST_MEMBER_EXCEPTION.getMessage()));
-        if (member.matchPassword(password)) {
-            return member.getId();
+        if (!member.matchPassword(password)) {
+            throw new IllegalArgumentException(ErrorMessage.NOT_MATCH_PASSWORD_EXCEPTION.getMessage());
         }
-        throw new IllegalArgumentException(ErrorMessage.NOT_MATCH_PASSWORD_EXCEPTION.getMessage());
+        return member.getId();
     }
 }
 

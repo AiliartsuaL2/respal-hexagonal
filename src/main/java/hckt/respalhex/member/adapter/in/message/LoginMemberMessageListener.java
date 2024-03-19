@@ -21,14 +21,13 @@ public class LoginMemberMessageListener {
         handleLoginRequest(message);
     }
 
-    public void handleLoginRequest(Message message) {
-        String body = message.body();
-        Gson gson = new Gson();
-
-        LoginMemberRequestDto requestDto = gson.fromJson(body, LoginMemberRequestDto.class);
-        Long memberId = signInUseCase.signIn(requestDto.email(), requestDto.password());
-
-        sqsResponder.sendResponseMessage(MessageContent.fromMessage(message),new MessageContent(String.valueOf(memberId)));
-        sqsResponder.shutdown();
+    private void handleLoginRequest(Message message) {
+        LoginMemberRequestDto requestDto = new Gson().fromJson(message.body(), LoginMemberRequestDto.class);
+        try {
+            Long memberId = signInUseCase.signIn(requestDto.email(), requestDto.password());
+            sqsResponder.sendResponseMessage(MessageContent.fromMessage(message),new MessageContent(String.valueOf(memberId)));
+        } catch (IllegalArgumentException ex) {
+            sqsResponder.sendResponseMessage(MessageContent.fromMessage(message),new MessageContent(ex.getMessage()));
+        }
     }
 }
