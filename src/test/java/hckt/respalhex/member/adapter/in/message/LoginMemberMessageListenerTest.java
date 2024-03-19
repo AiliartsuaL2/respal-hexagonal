@@ -1,50 +1,78 @@
 package hckt.respalhex.member.adapter.in.message;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import com.amazonaws.services.sqs.AmazonSQSResponder;
-import com.amazonaws.services.sqs.MessageContent;
+import static org.assertj.core.api.Assertions.assertThat;
+import com.amazonaws.services.sqs.AmazonSQSRequester;
 import com.google.gson.Gson;
+import hckt.respalhex.global.config.CleanUp;
 import hckt.respalhex.member.adapter.dto.request.LoginMemberRequestDto;
-import org.assertj.core.api.Assertions;
+import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
+import hckt.respalhex.member.application.port.in.PostMemberUseCase;
+import org.junit.jupiter.api.AfterEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import software.amazon.awssdk.services.sqs.model.Message;
-import hckt.respalhex.member.application.port.in.SignInUseCase;
-import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
+@SpringBootTest
+@ActiveProfiles("test")
 class LoginMemberMessageListenerTest {
-    AmazonSQSResponder responder = mock(AmazonSQSResponder.class);
-    SignInUseCase signInUseCase = mock(SignInUseCase.class);
-    LoginMemberMessageListener loginMemberMessageListener = new LoginMemberMessageListener(responder, signInUseCase);
+
+    @Autowired
+    CleanUp cleanUp;
+    @Autowired
+    AmazonSQSRequester requester;
+    @Autowired
+    LoginMemberMessageListener loginMemberMessageListener;
+    @Autowired
+    PostMemberUseCase postMemberUseCase;
+
+    @Value("${sqs.signin.request}")
+    String requestQueueUrl;
+
+    @AfterEach
+    void afterEach() {
+        // 테스트 이후 DB 초기화
+        cleanUp.all();
+    }
+
 
     @Nested
     @DisplayName("로그인 이벤트 핸들링 테스트")
     class HandleLoginRequest {
-        private static Long MEMBER_ID = 0L;
-        private static String EMAIL = "ailiartsual2@gmail.com";
-        private static String PASSWORD = "password";
+
+        private static final String EMAIL = "ailiartsual2@gmail.com";
+        private static final String PASSWORD = "123456789a!";
+        private static final String NICKNAME = "nickname";
+        private static final String PICTURE = "picture";
+        private static final String PROVIDER = "common";
+
         @Test
-        @DisplayName("로그인 이벤트 발생시 회원 ID를 응답한다.")
-        void test1() {
+        @DisplayName("로그인 이벤트 발생시 messageListener 에서 consume 후 응답한다.")
+        void test1() throws TimeoutException {
             //given
-            LoginMemberRequestDto requestDto = new LoginMemberRequestDto(EMAIL, PASSWORD);
-            Message message = Message.builder()
-                    .body(new Gson().toJson(requestDto))
+            PostMemberRequestDto postMemberRequestDto = new PostMemberRequestDto(EMAIL, PASSWORD, NICKNAME, PICTURE, PROVIDER);
+            postMemberUseCase.create(postMemberRequestDto);
+
+            LoginMemberRequestDto loginMemberRequestDto = new LoginMemberRequestDto(EMAIL, PASSWORD);
+            String body = new Gson().toJson(loginMemberRequestDto);
+            SendMessageRequest request = SendMessageRequest.builder()
+                    .queueUrl(requestQueueUrl)
+                    .messageBody(body)
                     .build();
-            when(signInUseCase.signIn(EMAIL, PASSWORD)).thenReturn(MEMBER_ID);
 
             //when
-            loginMemberMessageListener.handleLoginRequest(message);
+            Message reply = requester.sendMessageAndGetResponse(request,2, TimeUnit.SECONDS);
 
             //then
-            assertThatNoException();
+            assertThat(reply.body()).isEqualTo("1");
         }
     }
 }
