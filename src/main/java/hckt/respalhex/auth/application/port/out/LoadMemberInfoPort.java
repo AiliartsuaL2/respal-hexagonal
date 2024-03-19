@@ -5,5 +5,5 @@ import hckt.respalhex.auth.application.dto.request.LogInRequestDto;
 import java.util.concurrent.TimeoutException;
 
 public interface LoadMemberInfoPort {
-    Long signIn(LogInRequestDto requestDto) throws TimeoutException;
+    Long signIn(LogInRequestDto requestDto);
 }

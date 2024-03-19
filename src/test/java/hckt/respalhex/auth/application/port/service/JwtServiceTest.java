@@ -171,7 +171,7 @@ class JwtServiceTest {
     class SignInTest {
         @Test
         @DisplayName("정상 로그인시 토큰 발급")
-        void test1() throws TimeoutException {
+        void test1() {
             // given
             LogInRequestDto logInRequestDto = new LogInRequestDto(EMAIL, PASSWORD);
             when(loadMemberInfoPortMock.signIn(logInRequestDto)).thenReturn(MEMBER_ID);
@@ -188,21 +188,8 @@ class JwtServiceTest {
         }
 
         @Test
-        @DisplayName("loadMemberInfoPort.signIn() TimeOutException 발생시 MessagingException 발생")
-        void test2() throws TimeoutException {
-            // given
-            LogInRequestDto logInRequestDto = new LogInRequestDto(EMAIL, PASSWORD);
-            when(loadMemberInfoPortMock.signIn(logInRequestDto)).thenThrow(TimeoutException.class);
-
-            // when & then
-            assertThatThrownBy(() -> jwtService.signIn(logInRequestDto))
-                    .isInstanceOf(MessagingException.class)
-                    .hasMessage(ErrorMessage.COMMUNICATION_EXCEPTION.getMessage());
-        }
-
-        @Test
         @DisplayName("loadMemberInfoPort.signIn() null 반환 시 IAE 발생")
-        void test3() throws TimeoutException {
+        void test3() {
             // given
             LogInRequestDto logInRequestDto = new LogInRequestDto(EMAIL, PASSWORD);
             when(loadMemberInfoPortMock.signIn(logInRequestDto)).thenReturn(null);
