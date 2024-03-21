@@ -7,11 +7,13 @@ import hckt.respalhex.global.annotation.MessageQueue;
 import hckt.respalhex.member.adapter.dto.request.LoginMemberRequestDto;
 import hckt.respalhex.member.application.port.in.SignInUseCase;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.sqs.model.Message;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 
 @MessageQueue
 @RequiredArgsConstructor
+@Slf4j
 public class LoginMemberMessageListener {
     private final AmazonSQSResponder sqsResponder;
     private final SignInUseCase signInUseCase;
@@ -26,8 +28,9 @@ public class LoginMemberMessageListener {
         try {
             Long memberId = signInUseCase.signIn(requestDto.email(), requestDto.password());
             sqsResponder.sendResponseMessage(MessageContent.fromMessage(message),new MessageContent(String.valueOf(memberId)));
-        } catch (IllegalArgumentException ex) {
-            sqsResponder.sendResponseMessage(MessageContent.fromMessage(message),new MessageContent(ex.getMessage()));
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
+            sqsResponder.sendResponseMessage(MessageContent.fromMessage(message),new MessageContent(e.getMessage()));
         }
     }
 }

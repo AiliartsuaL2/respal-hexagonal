@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.annotation.Order;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import software.amazon.awssdk.services.sqs.SqsClient;
+
+import java.time.Duration;
 
 @Import(SqsBootstrapConfiguration.class)
 @Configuration
@@ -66,6 +68,7 @@ public class AwsSqsConfig {
                     }
                 })
                 .region(Region.of(AWS_REGION))
+                .overrideConfiguration(ClientOverrideConfiguration.builder().apiCallAttemptTimeout(Duration.ofSeconds(2L)).build())
                 .build();
     }
 

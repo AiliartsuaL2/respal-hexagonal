@@ -40,7 +40,7 @@ class LoginMemberMessageListenerTest {
     }
 
     @AfterAll
-    private static void afterEach(@Autowired AmazonSQSResponder responder) {
+    private static void afterAll(@Autowired AmazonSQSResponder responder) {
         responder.getAmazonSQS().deleteQueue(DeleteQueueRequest.builder().queueUrl(queueUrl).build());
     }
 
