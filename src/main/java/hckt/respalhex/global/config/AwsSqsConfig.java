@@ -68,7 +68,6 @@ public class AwsSqsConfig {
                     }
                 })
                 .region(Region.of(AWS_REGION))
-                .overrideConfiguration(ClientOverrideConfiguration.builder().apiCallAttemptTimeout(Duration.ofSeconds(2L)).build())
                 .build();
     }
 

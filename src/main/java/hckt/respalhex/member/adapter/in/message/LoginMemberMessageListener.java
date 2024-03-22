@@ -27,10 +27,10 @@ public class LoginMemberMessageListener {
         LoginMemberRequestDto requestDto = new Gson().fromJson(message.body(), LoginMemberRequestDto.class);
         try {
             Long memberId = signInUseCase.signIn(requestDto.email(), requestDto.password());
-            sqsResponder.sendResponseMessage(MessageContent.fromMessage(message),new MessageContent(String.valueOf(memberId)));
+            sqsResponder.sendResponseMessage(MessageContent.fromMessage(message), new MessageContent(String.valueOf(memberId)));
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
-            sqsResponder.sendResponseMessage(MessageContent.fromMessage(message),new MessageContent(e.getMessage()));
+            sqsResponder.sendResponseMessage(MessageContent.fromMessage(message), new MessageContent(e.getMessage()));
         }
     }
 }

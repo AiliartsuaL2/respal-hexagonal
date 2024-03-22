@@ -38,11 +38,11 @@ class LoginMemberMessagePublisher implements LoadMemberInfoPort {
          try {
             Message reply = sqsRequester.sendMessageAndGetResponse(request,2, TimeUnit.SECONDS);
             return Long.parseLong(reply.body());
-        } catch (SdkClientException | TimeoutException | NumberFormatException e) {
+        } catch (SdkClientException | TimeoutException e) {
              log.error(e.getMessage());
             throw new MessagingException(ErrorMessage.COMMUNICATION_EXCEPTION.getMessage());
-        } finally {
-            sqsRequester.shutdown();
-        }
+        } catch (NumberFormatException e) {
+             throw new IllegalArgumentException(e.getMessage());
+         }
     }
 }
