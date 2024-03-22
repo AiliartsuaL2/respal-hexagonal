@@ -42,7 +42,8 @@ class LoginMemberMessagePublisher implements LoadMemberInfoPort {
              log.error(e.getMessage());
             throw new MessagingException(ErrorMessage.COMMUNICATION_EXCEPTION.getMessage());
         } catch (NumberFormatException e) {
-             throw new IllegalArgumentException(e.getMessage());
+             String message = e.getMessage().split("\"")[1].replace("\\", "");
+             throw new IllegalArgumentException(message);
          }
     }
 }
