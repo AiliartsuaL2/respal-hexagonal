@@ -5,7 +5,9 @@ import com.amazonaws.services.sqs.MessageContent;
 import com.google.gson.Gson;
 import hckt.respalhex.global.annotation.MessageQueue;
 import hckt.respalhex.member.adapter.dto.request.LoginMemberRequestDto;
+import hckt.respalhex.member.adapter.dto.request.OAuthLoginMemberRequestDto;
 import hckt.respalhex.member.application.port.in.SignInUseCase;
+import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.sqs.model.Message;
@@ -18,15 +20,21 @@ public class LoginMemberMessageListener {
     private final AmazonSQSResponder sqsResponder;
     private final SignInUseCase signInUseCase;
 
-    @SqsListener("${spring.cloud.aws.sqs.queue-name}")
-    public void messageListener(Message message) {
-        handleLoginRequest(message);
+    @SqsListener("${sqs.signin.request-url.common}")
+    public void commonMessageListener(Message message) {
+        LoginMemberRequestDto requestDto = new Gson().fromJson(message.body(), LoginMemberRequestDto.class);
+        handleLoginRequest(message, () -> signInUseCase.signIn(requestDto.email(), requestDto.password()));
     }
 
-    private void handleLoginRequest(Message message) {
-        LoginMemberRequestDto requestDto = new Gson().fromJson(message.body(), LoginMemberRequestDto.class);
+    @SqsListener("${sqs.signin.request-url.oauth}")
+    public void oAuthMessageListener(Message message) {
+        OAuthLoginMemberRequestDto requestDto = new Gson().fromJson(message.body(), OAuthLoginMemberRequestDto.class);
+        handleLoginRequest(message, () -> signInUseCase.signIn(requestDto.client(), requestDto.provider(), requestDto.code()));
+    }
+
+    private void handleLoginRequest(Message message, Supplier<Long> signInSupplier) {
         try {
-            Long memberId = signInUseCase.signIn(requestDto.email(), requestDto.password());
+            Long memberId = signInSupplier.get();
             sqsResponder.sendResponseMessage(MessageContent.fromMessage(message), new MessageContent(String.valueOf(memberId)));
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());

@@ -5,4 +5,6 @@ import hckt.respalhex.auth.application.dto.response.LogInResponseDto;
 
 public interface SignInUseCase {
     LogInResponseDto signIn(LogInRequestDto requestDto);
+
+    LogInResponseDto signIn(String client, String provider, String code);
 }

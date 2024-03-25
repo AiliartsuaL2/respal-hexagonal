@@ -31,8 +31,6 @@ public class AwsSqsConfig {
 
     @Value("${spring.cloud.aws.region.static}")
     private String AWS_REGION;
-    @Value("${sqs.signin.request}")
-    private String requestQueueUrl;
 
     // sqs Client For Async
     @Bean

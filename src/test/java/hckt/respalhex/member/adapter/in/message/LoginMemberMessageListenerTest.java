@@ -70,7 +70,7 @@ class LoginMemberMessageListenerTest {
                     .thenReturn(MEMBER_ID);
 
             //when
-            loginMemberMessageListenerMock.messageListener(message);
+            loginMemberMessageListenerMock.commonMessageListener(message);
             String response = receiveMessage();
 
             //then
@@ -85,7 +85,7 @@ class LoginMemberMessageListenerTest {
                     .thenThrow(new IllegalArgumentException(ErrorMessage.NOT_EXIST_MEMBER_EXCEPTION.getMessage()));
 
             //when
-            loginMemberMessageListenerMock.messageListener(message);
+            loginMemberMessageListenerMock.commonMessageListener(message);
             String response = receiveMessage();
 
             // then
@@ -101,7 +101,7 @@ class LoginMemberMessageListenerTest {
                     .thenThrow(new IllegalArgumentException(ErrorMessage.NOT_MATCH_PASSWORD_EXCEPTION.getMessage()));
 
             //when
-            loginMemberMessageListenerMock.messageListener(message);
+            loginMemberMessageListenerMock.commonMessageListener(message);
             String response = receiveMessage();
 
             // then

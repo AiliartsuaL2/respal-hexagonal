@@ -6,4 +6,6 @@ import java.util.concurrent.TimeoutException;
 
 public interface LoadMemberInfoPort {
     Long signIn(LogInRequestDto requestDto);
+
+    Long signIn(String client, String provider, String code);
 }

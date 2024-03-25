@@ -1,7 +1,7 @@
 package hckt.respalhex.auth.adapter.dto.request;
 
 import hckt.respalhex.auth.application.dto.request.LogInRequestDto;
-import hckt.respalhex.member.adapter.dto.request.RequestDto;
+import hckt.respalhex.global.dto.RequestDto;
 
 public record SignInRequestDto(
         String email,

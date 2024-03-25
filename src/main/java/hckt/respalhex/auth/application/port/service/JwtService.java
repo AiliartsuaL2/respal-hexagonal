@@ -73,6 +73,17 @@ public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, Re
     @Transactional
     public LogInResponseDto signIn(LogInRequestDto requestDto) {
         Long memberId = loadMemberInfoPort.signIn(requestDto);
+        return getToken(memberId);
+    }
+
+    @Override
+    @Transactional
+    public LogInResponseDto signIn(String client, String provider, String code) {
+        Long memberId = loadMemberInfoPort.signIn(client, provider, code);
+        return getToken(memberId);
+    }
+
+    private LogInResponseDto getToken(Long memberId) {
         if (memberId == null) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_MEMBER_EXCEPTION.getMessage());
         }

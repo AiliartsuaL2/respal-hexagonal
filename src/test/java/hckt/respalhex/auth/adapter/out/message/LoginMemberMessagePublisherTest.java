@@ -48,7 +48,7 @@ class LoginMemberMessagePublisherTest {
         private static final String EMAIL = "ailiartsual2@gmail.com";
         private static final String PASSWORD = "123456789a!";
 
-        LoginMemberMessagePublisher loginMemberMessagePublisher = new LoginMemberMessagePublisher(queueUrl, requester);
+        LoginMemberMessagePublisher loginMemberMessagePublisher = new LoginMemberMessagePublisher(queueUrl, queueUrl, requester);
         LogInRequestDto logInRequestDto = new LogInRequestDto(EMAIL, PASSWORD);
         Message message = Message.builder()
                 .body(new Gson().toJson(logInRequestDto))

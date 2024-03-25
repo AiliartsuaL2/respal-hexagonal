@@ -60,5 +60,10 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCas
         }
         return member.getId();
     }
+
+    @Override
+    public Long signIn(String client, String provider, String code) {
+        return null;
+    }
 }
 
