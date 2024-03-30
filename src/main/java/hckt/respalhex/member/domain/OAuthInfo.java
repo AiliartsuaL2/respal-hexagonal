@@ -29,4 +29,11 @@ public class OAuthInfo {
     private String image;
 
     private String nickname;
+
+    public OAuthInfo(Provider provider, String email, String image, String nickname) {
+        this.provider = provider;
+        this.email = email;
+        this.image = image;
+        this.nickname = nickname;
+    }
 }
