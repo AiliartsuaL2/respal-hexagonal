@@ -1,0 +1,30 @@
+<body class="text-center" xmlns:th="http://www.w3.org/1999/xhtml">
+<form class="form-signin" th:action="@{/member/login}" method="post"> <!-- 요청 보내기-->
+    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+
+    <div th:if="${param.error}"  class="alert alert-danger" role="alert">
+        Invalid username and password
+    </div>
+
+    <div th:if="${param.logout}"  class="alert alert-primary" role="alert">
+        You have been logged out
+    </div>
+
+    <label for="email" class="sr-only">username</label>
+    <input type="text" id="email" name="email" class="form-control" placeholder="이메일을 입력해주세요" required autofocus>
+
+    <label for="password" class="sr-only">password</label>
+    <input type="password" id="password" name="password" class="form-control" placeholder="비밀번호를 입력해주세요" required>
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    <a href="https://kauth.kakao.com/oauth/authorize?client_id=6dee52527ff692975e9b7b8596ad76b5&redirect_uri=https://api.respal.me/oauth/web-dev/login/kakao&response_type=code"> 웹 카카오 </a>
+    <a href="https://accounts.google.com/o/oauth2/auth?client_id=900804701090-sk6rt9ah5cp1tmg6ppudj48ki2hs29co.apps.googleusercontent.com&redirect_uri=http://localhost:8080/oauth/web-dev/login/google&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"> 웹 구글 </a>
+    <a href="https://github.com/login/oauth/authorize?client_id=Iv1.dbc970eb37f92943&redirect_uri=https://api.respal.me/oauth/web-dev/login/github"> 웹 깃허브 </a>
+    <br>
+    <a href="https://kauth.kakao.com/oauth/authorize?client_id=6dee52527ff692975e9b7b8596ad76b5&redirect_uri=https://api.respal.me/oauth/app/login/kakao&response_type=code"> 앱 카카오 </a>
+    <a href="https://accounts.google.com/o/oauth2/auth?client_id=900804701090-sk6rt9ah5cp1tmg6ppudj48ki2hs29co.apps.googleusercontent.com&redirect_uri=https://api.respal.me/oauth/app/login/google&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"> 앱 구글 </a>
+    <a href="https://github.com/login/oauth/authorize?client_id=Iv1.dbc970eb37f92943&redirect_uri=https://api.respal.me/oauth/app/login/github"> 앱 깃허브 </a>
+
+    <p class="mt-5 mb-3 text-muted">&copy; 2017-2020</p>
+</form>
+</body>
