@@ -1,5 +1,8 @@
 package hckt.respalhex.member.adapter.out.communicate;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import hckt.respalhex.global.annotation.CommunicateAdapter;
 import hckt.respalhex.member.adapter.out.communicate.dto.OAuthCommunicateResponseDto;
 import hckt.respalhex.member.adapter.out.communicate.dto.OAuthToken;
@@ -59,9 +62,11 @@ public class OAuthInfoCommunicateAdapter {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer "+accessToken)
                 .build();
-        return webClient.get()
+        String response = webClient.get()
                 .retrieve()
-                .bodyToMono(providerInfo.getResponseDto().getClass())
+                .bodyToMono(String.class)
                 .block();
+        Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+        return gson.fromJson(response, providerInfo.getResponseDto().getClass());
     }
 }
