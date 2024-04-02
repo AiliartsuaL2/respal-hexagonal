@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class TestController {
     @GetMapping("/member/login")
     public String loginPage(){
-        return "/member/login.html";
+        return "member/login.html";
     }
 }

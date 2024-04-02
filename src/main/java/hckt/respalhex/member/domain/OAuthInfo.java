@@ -7,6 +7,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,6 +33,7 @@ public class OAuthInfo {
     private String nickname;
 
     public OAuthInfo(Provider provider, String email, String image, String nickname) {
+        this.uid = UUID.randomUUID().toString().replace("-", "");
         this.provider = provider;
         this.email = email;
         this.image = image;

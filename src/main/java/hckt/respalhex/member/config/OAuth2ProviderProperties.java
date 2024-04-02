@@ -1,5 +1,8 @@
 package hckt.respalhex.member.config;
 
+import hckt.respalhex.member.adapter.out.communicate.dto.GithubResponseDto;
+import hckt.respalhex.member.adapter.out.communicate.dto.GoogleResponseDto;
+import hckt.respalhex.member.adapter.out.communicate.dto.KakaoResponseDto;
 import hckt.respalhex.member.domain.converter.Provider;
 import hckt.respalhex.member.exception.ErrorMessage;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,6 +19,9 @@ public class OAuth2ProviderProperties {
         this.kakao = kakao;
         this.google = google;
         this.github = github;
+        kakao.setResponseType(KakaoResponseDto.class);
+        google.setResponseType(GoogleResponseDto.class);
+        github.setResponseType(GithubResponseDto.class);
     }
 
     public ProviderInfo get(Provider provider) {

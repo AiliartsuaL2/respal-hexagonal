@@ -25,6 +25,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private static final String[] OAUTH_V1_WHITELIST = {
+            "/api/v1.0/web-dev/oauth/google",
+            "/api/v1.0/web-dev/oauth/kakao",
+            "/api/v1.0/web-dev/oauth/github",
+            "/api/v1.0/app/oauth/google",
+            "/api/v1.0/app/oauth/kakao",
+            "/api/v1.0/app/oauth/github"
+    };
+
     private final GetTokenInfoProvider getTokenInfoProvider;
     private final JwtExceptionFilter jwtExceptionFilter;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
@@ -39,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/member/login").permitAll()
                         .requestMatchers("/api/v1.0/signup").permitAll()
                         .requestMatchers("/api/v1.0/signin").permitAll()
+                        .requestMatchers(OAUTH_V1_WHITELIST).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(e -> e.accessDeniedHandler(jwtAccessDeniedHandler)
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint))

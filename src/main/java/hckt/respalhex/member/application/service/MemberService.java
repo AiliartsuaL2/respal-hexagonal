@@ -69,7 +69,7 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCas
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = OAuthSignInException.class)
     public Long signIn(OAuthSignInRequestDto requestDto) throws OAuthSignInException{
         OAuthInfo oAuthInfo = loadOAuthInfoPort.loadOAuthInfo(requestDto);
         Provider provider = Provider.findByValue(requestDto.provider());

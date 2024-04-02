@@ -20,7 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @CommunicateAdapter
 @RequiredArgsConstructor
 public class OAuthInfoCommunicateAdapter {
-    @Value("respal.url")
+    @Value("${respal.url}")
     private String url;
     private final OAuth2ProviderProperties oAuth2ProviderProperties;
 
@@ -42,7 +42,7 @@ public class OAuthInfoCommunicateAdapter {
                 .baseUrl(providerInfo.getTokenUrl())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .build();
-        OAuthToken oAuthToken = webClient.post()
+        String response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .queryParam("grant_type", providerInfo.getGrantType())
                         .queryParam("client_id", providerInfo.getClientId())
@@ -51,9 +51,9 @@ public class OAuthInfoCommunicateAdapter {
                         .queryParam("code", code)
                         .build())
                 .retrieve()
-                .bodyToMono(OAuthToken.class)
+                .bodyToMono(String.class)
                 .block();
-        return oAuthToken.getAccessToken();
+        return convertByGson(response, OAuthToken.class).getAccessToken();
     }
 
     private OAuthCommunicateResponseDto getUserInfo(ProviderInfo providerInfo, String accessToken) {
@@ -66,7 +66,16 @@ public class OAuthInfoCommunicateAdapter {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+        OAuthCommunicateResponseDto responseDto = convertByGson(response, providerInfo.getResponseType());
+        responseDto.initAllFields();
+        return responseDto;
+    }
+
+    private<T> T convertByGson(String response, Class<? extends T> clazz) {
+        if(!response.startsWith("{")) {
+            response = "{\"" + response.replace("&", "\",\"").replace("=", "\":\"") + "\"}";
+        }
         Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-        return gson.fromJson(response, providerInfo.getResponseDto().getClass());
+        return gson.fromJson(response, clazz);
     }
 }
