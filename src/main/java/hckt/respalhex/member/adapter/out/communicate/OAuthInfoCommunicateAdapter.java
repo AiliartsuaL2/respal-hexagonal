@@ -83,8 +83,13 @@ public class OAuthInfoCommunicateAdapter {
                 .build();
         String response = webClient.get()
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        clientResponse -> {
+                            log.error(clientResponse.bodyToMono(String.class).block());
+                            return clientResponse.bodyToMono(String.class).map(CommunicationException::new);
+                        })
                 .bodyToMono(String.class)
-                .retry(2)
+                .timeout(Duration.ofSeconds(1))
                 .doOnError(e -> {
                     log.error(e.getMessage());
                     throw new CommunicationException(ErrorMessage.COMMUNICATE_EXCEPTION.getMessage());
