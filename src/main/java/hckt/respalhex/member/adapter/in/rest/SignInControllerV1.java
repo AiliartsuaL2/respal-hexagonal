@@ -4,8 +4,8 @@ import hckt.respalhex.member.adapter.dto.request.SignInAdapterRequestDto;
 import hckt.respalhex.member.application.dto.request.OAuthSignInRequestDto;
 import hckt.respalhex.member.application.port.in.SignInUseCase;
 import hckt.respalhex.member.exception.OAuthSignInException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +15,14 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1.0")
-@RequiredArgsConstructor
 @Slf4j
 public class SignInControllerV1 {
     private final SignInUseCase signInUseCase;
+    private final String webUrl;
+    public SignInControllerV1(SignInUseCase signInUseCase, @Value("${respal.web.url}") String webUrl) {
+        this.signInUseCase = signInUseCase;
+        this.webUrl = webUrl;
+    }
 
     /**
      * 일반 로그인
@@ -33,7 +37,7 @@ public class SignInControllerV1 {
     ResponseEntity<?> signin(@RequestBody SignInAdapterRequestDto requestDto) {
         Long memberId = signInUseCase.signIn(requestDto.convertToApplicationDto());
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/"));
+        headers.setLocation(URI.create(webUrl + "/main"));
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
 
@@ -51,9 +55,9 @@ public class SignInControllerV1 {
         HttpHeaders headers = new HttpHeaders();
         try {
             Long memberId = signInUseCase.signIn(new OAuthSignInRequestDto(client, provider, code));
-            headers.setLocation(URI.create("/"));
+            headers.setLocation(URI.create(webUrl + "/main"));
         } catch (OAuthSignInException ex) {
-            headers.setLocation(ex.getRedirectUri());
+            headers.setLocation(URI.create(webUrl + ex.getRedirectUri()));
         }
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
