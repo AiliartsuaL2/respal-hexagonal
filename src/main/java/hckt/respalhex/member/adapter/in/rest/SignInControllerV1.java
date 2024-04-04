@@ -19,6 +19,7 @@ import java.net.URI;
 public class SignInControllerV1 {
     private final SignInUseCase signInUseCase;
     private final String webUrl;
+    private final String appCustomScheme = "app://";
     public SignInControllerV1(SignInUseCase signInUseCase, @Value("${respal.web.url}") String webUrl) {
         this.signInUseCase = signInUseCase;
         this.webUrl = webUrl;
@@ -55,9 +56,13 @@ public class SignInControllerV1 {
         HttpHeaders headers = new HttpHeaders();
         try {
             Long memberId = signInUseCase.signIn(new OAuthSignInRequestDto(client, provider, code));
-            headers.setLocation(URI.create("/api/v1.0/token?memberId=" + memberId));
+            headers.setLocation(URI.create("/api/v1.0/token?memberId=" + memberId + "&client=" + client));
         } catch (OAuthSignInException ex) {
-            headers.setLocation(URI.create(webUrl + ex.getRedirectUri()));
+            if ("app".equals(client)) {
+                headers.setLocation(URI.create(appCustomScheme + ex.getRedirectUri(client)));
+            } else {
+                headers.setLocation(URI.create(webUrl + ex.getRedirectUri(client)));
+            }
         }
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
     }
