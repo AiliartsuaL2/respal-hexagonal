@@ -6,16 +6,13 @@ import hckt.respalhex.global.event.CreateUserAccountEvent;
 import hckt.respalhex.member.application.dto.request.OAuthSignInRequestDto;
 import hckt.respalhex.member.application.dto.request.SignInMemberRequestDto;
 import hckt.respalhex.member.application.port.in.SignInUseCase;
-import hckt.respalhex.member.application.port.out.CommandOAuthInfoPort;
-import hckt.respalhex.member.application.port.out.LoadOAuthInfoPort;
+import hckt.respalhex.member.application.port.out.*;
 import hckt.respalhex.member.domain.OAuthInfo;
 import hckt.respalhex.member.exception.ErrorMessage;
 import hckt.respalhex.member.application.dto.response.GetMemberResponseDto;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import hckt.respalhex.member.application.port.in.GetMemberUseCase;
 import hckt.respalhex.member.application.port.in.PostMemberUseCase;
-import hckt.respalhex.member.application.port.out.CommandMemberPort;
-import hckt.respalhex.member.application.port.out.LoadMemberPort;
 import hckt.respalhex.member.domain.Member;
 import hckt.respalhex.member.domain.OAuth;
 import hckt.respalhex.member.domain.converter.Provider;
@@ -33,6 +30,7 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCas
     private final CommandMemberPort commandMemberPort;
     private final LoadOAuthInfoPort loadOAuthInfoPort;
     private final CommandOAuthInfoPort commandOAuthInfoPort;
+    private final CommandOAuthPort commandOAuthPort;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
@@ -46,6 +44,7 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCas
         Member member = Member.create(requestDto);
         OAuth oAuth = OAuth.create(member, provider);
         member.addOAuth(oAuth);
+        commandOAuthPort.create(oAuth);
 
         commandMemberPort.create(member);
         eventPublisher.publishEvent(new CreateUserAccountEvent(member.getId(), "user"));

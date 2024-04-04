@@ -3,13 +3,10 @@ package hckt.respalhex.member.application.service;
 import hckt.respalhex.global.event.CreateUserAccountEvent;
 import hckt.respalhex.member.application.dto.request.OAuthSignInRequestDto;
 import hckt.respalhex.member.application.dto.request.SignInMemberRequestDto;
-import hckt.respalhex.member.application.port.out.CommandOAuthInfoPort;
-import hckt.respalhex.member.application.port.out.LoadOAuthInfoPort;
+import hckt.respalhex.member.application.port.out.*;
 import hckt.respalhex.member.domain.OAuthInfo;
 import hckt.respalhex.member.exception.ErrorMessage;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
-import hckt.respalhex.member.application.port.out.CommandMemberPort;
-import hckt.respalhex.member.application.port.out.LoadMemberPort;
 import hckt.respalhex.member.domain.Member;
 import hckt.respalhex.member.domain.converter.Provider;
 import hckt.respalhex.member.exception.OAuthSignInException;
@@ -35,9 +32,10 @@ class MemberServiceTest {
     private final CommandMemberPort commandMemberPort = mock(CommandMemberPort.class);
     private final LoadOAuthInfoPort loadOAuthInfoPort = mock(LoadOAuthInfoPort.class);
     private final CommandOAuthInfoPort commandOAuthInfoPort = mock(CommandOAuthInfoPort.class);
+    private final CommandOAuthPort commandOAuthPort = mock(CommandOAuthPort.class);
 
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
-    private final MemberService memberService = new MemberService(loadMemberPort, commandMemberPort, loadOAuthInfoPort, commandOAuthInfoPort, applicationEventPublisher);
+    private final MemberService memberService = new MemberService(loadMemberPort, commandMemberPort, loadOAuthInfoPort, commandOAuthInfoPort, commandOAuthPort, applicationEventPublisher);
 
     private static final String EMAIL = "email";
     private static final String NICKNAME = "nickname";

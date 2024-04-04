@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/member/login").permitAll()
                         .requestMatchers("/api/v1.0/signup").permitAll()
                         .requestMatchers("/api/v1.0/signin").permitAll()
+                        .requestMatchers("/api/v1.0/token").permitAll()
                         .requestMatchers(OAUTH_V1_WHITELIST).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(e -> e.accessDeniedHandler(jwtAccessDeniedHandler)
