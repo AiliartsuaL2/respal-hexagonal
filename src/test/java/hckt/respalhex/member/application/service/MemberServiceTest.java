@@ -42,7 +42,7 @@ class MemberServiceTest {
     private static final String PASSWORD = "password";
     private static final String PICTURE = "picture";
     private static final String PROVIDER_COMMON = "common";
-    private static final String PROVIDER_KAKAO = "common";
+    private static final String PROVIDER_KAKAO = "kakao";
 
     @Nested
     @DisplayName("회원 가입 테스트")
@@ -230,6 +230,7 @@ class MemberServiceTest {
             Member member = mock(Member.class);
 
             when(member.getId()).thenReturn(id);
+            when(oAuthInfo.getEmail()).thenReturn(EMAIL);
             when(loadOAuthInfoPort.loadOAuthInfo(oAuthSignInRequestDto))
                     .thenReturn(oAuthInfo);
             when(loadMemberPort.loadMemberByEmailAndProvider(EMAIL, Provider.KAKAO))

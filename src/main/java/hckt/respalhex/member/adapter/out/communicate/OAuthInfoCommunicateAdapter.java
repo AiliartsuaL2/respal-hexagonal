@@ -28,7 +28,7 @@ public class OAuthInfoCommunicateAdapter {
     private final String url;
     private final OAuth2ProviderProperties oAuth2ProviderProperties;
 
-    public OAuthInfoCommunicateAdapter(@Value("${respal.url}") String url, OAuth2ProviderProperties oAuth2ProviderProperties) {
+    public OAuthInfoCommunicateAdapter(@Value("${respal.api-url}") String url, OAuth2ProviderProperties oAuth2ProviderProperties) {
         this.url = url;
         this.oAuth2ProviderProperties = oAuth2ProviderProperties;
     }

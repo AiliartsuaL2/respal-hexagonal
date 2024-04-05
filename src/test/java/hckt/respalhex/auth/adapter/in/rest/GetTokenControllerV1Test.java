@@ -4,6 +4,7 @@ import hckt.respalhex.auth.adapter.in.handler.JwtExceptionFilter;
 import hckt.respalhex.auth.adapter.out.handler.JwtAccessDeniedHandler;
 import hckt.respalhex.auth.adapter.out.handler.JwtAuthenticationEntryPoint;
 import hckt.respalhex.auth.application.port.in.CreateTokenUseCase;
+import hckt.respalhex.auth.domain.Token;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -37,6 +40,8 @@ class GetTokenControllerV1Test {
     private MockMvc mockMvc;
     @Value("${respal.web.url}")
     private String webUrl;
+    @Value("${respal.app.custom-scheme}")
+    private String appCustomScheme;
 
     @MockBean
     CreateTokenUseCase createTokenUseCase;
@@ -47,8 +52,12 @@ class GetTokenControllerV1Test {
         // given
         long memberId = 1L;
         String client = "web-dev";
-        String token = "token";
-        String expectedRedirectUrl = webUrl+"/main?token"+token;
+        String tokenToString = "token";
+        String expectedRedirectUrl = webUrl+"/main?token="+tokenToString;
+
+        Token token = mock(Token.class);
+        when(token.convertToQueryParam()).thenReturn("?token="+tokenToString);
+        when(createTokenUseCase.create(memberId)).thenReturn(token);
 
         // when & then
         mockMvc.perform(get(GET_TOKEN_ENDPOINT)
@@ -66,8 +75,11 @@ class GetTokenControllerV1Test {
         // given
         long memberId = 1L;
         String client = "app";
-        String token = "token";
-        String expectedRedirectUrl = "app://callback?token"+token;
+        String tokenToString = "token";
+        String expectedRedirectUrl = appCustomScheme+"callback?token="+tokenToString;
+        Token token = mock(Token.class);
+        when(token.convertToQueryParam()).thenReturn("?token="+tokenToString);
+        when(createTokenUseCase.create(memberId)).thenReturn(token);
 
         // when & then
         mockMvc.perform(get(GET_TOKEN_ENDPOINT)
