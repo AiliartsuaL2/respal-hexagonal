@@ -5,15 +5,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import hckt.respalhex.auth.application.port.out.CommandRefreshTokenPort;
 import hckt.respalhex.auth.application.port.out.LoadRefreshTokenPort;
+import hckt.respalhex.auth.application.port.out.LoadUserAccountPort;
 import hckt.respalhex.auth.application.port.service.provider.CreateTokenProvider;
 import hckt.respalhex.auth.application.port.service.provider.GetTokenInfoProvider;
 import hckt.respalhex.auth.domain.Token;
+import hckt.respalhex.auth.domain.UserAccount;
 import hckt.respalhex.auth.exception.ErrorMessage;
 import java.util.Optional;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,12 +31,18 @@ class JwtServiceTest {
     LoadRefreshTokenPort loadRefreshTokenPortMock = mock(LoadRefreshTokenPort.class);
     CreateTokenProvider createTokenProviderMock = jwtTokenProvider;
     GetTokenInfoProvider getTokenInfoProviderMock = jwtTokenProvider;
-    JwtService jwtService = new JwtService(commandRefreshTokenPortMock, loadRefreshTokenPortMock, createTokenProviderMock, getTokenInfoProviderMock);
+    LoadUserAccountPort loadUserAccountPortMock = mock(LoadUserAccountPort.class);
+    JwtService jwtService = new JwtService(commandRefreshTokenPortMock, loadRefreshTokenPortMock, createTokenProviderMock, getTokenInfoProviderMock, loadUserAccountPortMock);
 
     private static final Long MEMBER_ID = 0L;
     private static final Long MEMBER_ID_NULL = null;
     private static final String TOKEN_NULL = null;
     private static final String INVALID_TOKEN =  new JwtTokenProvider("invalid", 10000, 1000000, mock(UserDetailServiceImpl.class)).createAccessToken("1");
+
+    @BeforeEach
+    void init() {
+        when(loadUserAccountPortMock.findUserAccountByMemberId(MEMBER_ID)).thenReturn(Optional.ofNullable(mock(UserAccount.class)));
+    }
 
     @Nested
     @DisplayName("토큰 생성 테스트")
@@ -56,6 +65,18 @@ class JwtServiceTest {
             assertThatThrownBy(() -> jwtService.create(MEMBER_ID_NULL))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage(ErrorMessage.NOT_EXIST_MEMBER_ID_EXCEPTION.getMessage());
+        }
+
+        @Test
+        @DisplayName("가입하지 않은 회원이 토큰 발급 시도시 예외 발생")
+        void test3() {
+            // given
+            when(loadUserAccountPortMock.findUserAccountByMemberId(MEMBER_ID)).thenReturn(Optional.empty());
+
+            // when & then
+            assertThatThrownBy(() -> jwtService.create(MEMBER_ID))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage(ErrorMessage.NOT_EXIST_MEMBER_EXCEPTION.getMessage());
         }
     }
 
@@ -98,7 +119,7 @@ class JwtServiceTest {
             //given
             CreateTokenProvider createTokenProvider = new JwtTokenProvider("secretKey", 0, 0, mock(UserDetailServiceImpl.class));
             JwtService jwtServiceMock = new JwtService(commandRefreshTokenPortMock, loadRefreshTokenPortMock,
-                    createTokenProvider, getTokenInfoProviderMock);
+                    createTokenProvider, getTokenInfoProviderMock, loadUserAccountPortMock);
             Token expiredToken = jwtServiceMock.create(MEMBER_ID);
 
             //when & then
@@ -149,7 +170,7 @@ class JwtServiceTest {
             //given
             CreateTokenProvider createTokenProvider = new JwtTokenProvider("secretKey", 0, 0, mock(UserDetailServiceImpl.class));
             JwtService jwtServiceMock = new JwtService(commandRefreshTokenPortMock, loadRefreshTokenPortMock,
-                    createTokenProvider, getTokenInfoProviderMock);
+                    createTokenProvider, getTokenInfoProviderMock, loadUserAccountPortMock);
             Token expiredToken = jwtServiceMock.create(MEMBER_ID);
 
             //when & then

@@ -2,11 +2,13 @@ package hckt.respalhex.auth.adapter.in.rest;
 
 import hckt.respalhex.auth.application.port.in.CreateTokenUseCase;
 import hckt.respalhex.auth.domain.Token;
+import hckt.respalhex.member.exception.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,6 +47,8 @@ public class GetTokenControllerV1 {
             @RequestParam
             String client
             ) {
+        validateParameter(memberId, ErrorMessage.NOT_EXIST_MEMBER_ID_EXCEPTION);
+        validateParameter(client, ErrorMessage.NOT_EXIST_CLIENT_EXCEPTION);
         Token token = createTokenUseCase.create(memberId);
         HttpHeaders headers = new HttpHeaders();
         if ("app".equals(client)) {
@@ -54,5 +58,11 @@ public class GetTokenControllerV1 {
             headers.setLocation(URI.create(webUrl + WEB_LOGIN_PATH + token.convertToQueryParam()));
         }
         return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+    }
+
+    private <T> void validateParameter(T data, ErrorMessage errorMessage) {
+        if (ObjectUtils.isEmpty(data)) {
+            throw new IllegalArgumentException(errorMessage.getMessage());
+        }
     }
 }

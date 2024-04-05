@@ -207,8 +207,6 @@ class MemberServiceTest {
             when(oAuthInfo.getEmail()).thenReturn(EMAIL);
             when(loadOAuthInfoPort.loadOAuthInfo(oAuthSignInRequestDto))
                     .thenReturn(oAuthInfo);
-            when(loadMemberPort.loadMemberByEmailAndProvider(EMAIL, Provider.KAKAO))
-                    .thenReturn(Optional.of(member));
 
             //when & then
             assertThatThrownBy(() -> memberService.signIn(oAuthSignInRequestDto))

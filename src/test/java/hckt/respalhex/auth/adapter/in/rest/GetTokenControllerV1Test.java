@@ -47,8 +47,52 @@ class GetTokenControllerV1Test {
     CreateTokenUseCase createTokenUseCase;
 
     @Test
-    @DisplayName("웹 로그인시 쿼리 파라미터로 토큰을 포함하여 weburl/main 으로 Redirect 된다.")
+    @DisplayName("memberId 파라미터가 빈 값인 경우 400 에러가 발생한다.")
     void test1() throws Exception {
+        // given
+        long memberId = 1L;
+        String client = "web-dev";
+        String tokenToString = "token";
+        String expectedRedirectUrl = webUrl+"/main?token="+tokenToString;
+
+        Token token = mock(Token.class);
+        when(token.convertToQueryParam()).thenReturn("?token="+tokenToString);
+        when(createTokenUseCase.create(memberId)).thenReturn(token);
+
+        // when & then
+        mockMvc.perform(get(GET_TOKEN_ENDPOINT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("memberId", "")
+                        .param("client", client)
+                        .with(csrf()))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @DisplayName("client 파라미터가 빈 값인 경우 400 에러가 발생한다.")
+    void test2() throws Exception {
+        // given
+        long memberId = 1L;
+        String client = "";
+        String tokenToString = "token";
+        String expectedRedirectUrl = webUrl+"/main?token="+tokenToString;
+
+        Token token = mock(Token.class);
+        when(token.convertToQueryParam()).thenReturn("?token="+tokenToString);
+        when(createTokenUseCase.create(memberId)).thenReturn(token);
+
+        // when & then
+        mockMvc.perform(get(GET_TOKEN_ENDPOINT)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("memberId", String.valueOf(memberId))
+                        .param("client", client)
+                        .with(csrf()))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @DisplayName("웹 로그인시 쿼리 파라미터로 토큰을 포함하여 weburl/main 으로 Redirect 된다.")
+    void test3() throws Exception {
         // given
         long memberId = 1L;
         String client = "web-dev";
@@ -71,7 +115,7 @@ class GetTokenControllerV1Test {
 
     @Test
     @DisplayName("앱 로그인시 쿼리 파라미터로 토큰을 포함하여 appCustomScheme/callback 으로 Redirect 된다.")
-    void test2() throws Exception {
+    void test4() throws Exception {
         // given
         long memberId = 1L;
         String client = "app";
@@ -90,5 +134,4 @@ class GetTokenControllerV1Test {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(expectedRedirectUrl));
     }
-
 }
