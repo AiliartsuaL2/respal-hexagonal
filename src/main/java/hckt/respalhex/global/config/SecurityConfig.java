@@ -12,16 +12,27 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @RequiredArgsConstructor
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
+    private static final String[] OAUTH_V1_WHITELIST = {
+            "/api/v1.0/web-dev/oauth/google",
+            "/api/v1.0/web-dev/oauth/kakao",
+            "/api/v1.0/web-dev/oauth/github",
+            "/api/v1.0/app/oauth/google",
+            "/api/v1.0/app/oauth/kakao",
+            "/api/v1.0/app/oauth/github"
+    };
+
     private final GetTokenInfoProvider getTokenInfoProvider;
     private final JwtExceptionFilter jwtExceptionFilter;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
@@ -29,19 +40,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request -> request
-                        .requestMatchers(HttpMethod.POST, "/v1.0.0/member").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/v1.0.0/signin").permitAll()
-                .anyRequest().authenticated())
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin().disable()
-                .exceptionHandling()
-                .accessDeniedHandler(jwtAccessDeniedHandler)
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .and()
+        http
+                .csrf(CsrfConfigurer::disable)
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/resources/templates/member/login.html").permitAll()
+                        .requestMatchers("/api/v1.0/sign-up").permitAll()
+                        .requestMatchers("/api/v1.0/sign-in").permitAll()
+                        .requestMatchers(OAUTH_V1_WHITELIST).permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(e -> e.accessDeniedHandler(jwtAccessDeniedHandler)
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(new JwtAuthenticationFilter(getTokenInfoProvider),
                         UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtExceptionFilter,JwtAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class)
                 .httpBasic(withDefaults());
         return http.build();
     }

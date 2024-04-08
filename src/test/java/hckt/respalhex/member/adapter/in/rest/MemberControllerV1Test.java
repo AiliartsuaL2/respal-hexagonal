@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hckt.respalhex.auth.adapter.in.handler.JwtExceptionFilter;
 import hckt.respalhex.auth.adapter.out.handler.JwtAccessDeniedHandler;
 import hckt.respalhex.auth.adapter.out.handler.JwtAuthenticationEntryPoint;
-import hckt.respalhex.global.config.SecurityConfig;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import hckt.respalhex.member.application.port.in.GetMemberUseCase;
 import hckt.respalhex.member.application.port.in.PostMemberUseCase;
@@ -26,7 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(controllers = CreateMemberApiV1.class,
+@WebMvcTest(controllers = SignUpMemberApiV1.class,
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = JwtExceptionFilter.class),
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = JwtAccessDeniedHandler.class),
@@ -64,7 +63,7 @@ class MemberControllerV1Test {
                     .build();
 
             //when
-            mockMvc.perform(post("/v1.0.0/member")
+            mockMvc.perform(post("/api/v1.0/sign-up")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(requestDto))
                             .with(csrf()))
