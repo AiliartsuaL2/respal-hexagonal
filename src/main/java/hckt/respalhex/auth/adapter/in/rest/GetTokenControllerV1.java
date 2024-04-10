@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
+/**
+ * 240410 _ Not use API
+ */
 @RestController
 @RequestMapping("/api/v1.0")
 @Slf4j

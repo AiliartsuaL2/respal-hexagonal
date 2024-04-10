@@ -5,6 +5,8 @@ import hckt.respalhex.global.event.CreateUserAccountEvent;
 
 import hckt.respalhex.member.application.dto.request.OAuthSignInRequestDto;
 import hckt.respalhex.member.application.dto.request.SignInMemberRequestDto;
+import hckt.respalhex.member.application.dto.response.GetTokenResponseDto;
+import hckt.respalhex.member.application.port.in.GetTokenUseCase;
 import hckt.respalhex.member.application.port.in.SignInUseCase;
 import hckt.respalhex.member.application.port.out.*;
 import hckt.respalhex.member.domain.OAuthInfo;
@@ -25,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @UseCase
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCase {
+class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCase, GetTokenUseCase {
     private final LoadMemberPort loadMemberPort;
     private final CommandMemberPort commandMemberPort;
     private final LoadOAuthInfoPort loadOAuthInfoPort;
@@ -77,6 +79,11 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCas
             return new OAuthSignInException(oAuthInfo, requestDto.client());
         });
         return member.getId();
+    }
+
+    @Override
+    public GetTokenResponseDto getToken(Long memberId) {
+        return null;
     }
 }
 

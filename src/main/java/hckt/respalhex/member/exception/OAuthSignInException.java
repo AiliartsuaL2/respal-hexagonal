@@ -6,8 +6,6 @@ import lombok.Getter;
 
 @Getter
 public class OAuthSignInException extends RuntimeException {
-    private static final String WEB_PATH = "/signup/social";
-    private static final String APP_PATH = "/signup";
     private final String uid;
     private final String client;
 
@@ -17,10 +15,7 @@ public class OAuthSignInException extends RuntimeException {
         this.client = client;
     }
 
-    public String getRedirectUri(String client) {
-        if ("app".equals(client)) {
-            return APP_PATH + "?uid=" + this.uid;
-        }
-        return WEB_PATH + "?uid=" + this.uid;
+    public String getUidParameter() {
+            return "?uid=" + this.uid;
     }
 }
