@@ -33,9 +33,9 @@ class MemberServiceTest {
     private final LoadOAuthInfoPort loadOAuthInfoPort = mock(LoadOAuthInfoPort.class);
     private final CommandOAuthInfoPort commandOAuthInfoPort = mock(CommandOAuthInfoPort.class);
     private final CommandOAuthPort commandOAuthPort = mock(CommandOAuthPort.class);
-
+    private final LoadTokenPort loadTokenPort = mock(LoadTokenPort.class);
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
-    private final MemberService memberService = new MemberService(loadMemberPort, commandMemberPort, loadOAuthInfoPort, commandOAuthInfoPort, commandOAuthPort, applicationEventPublisher);
+    private final MemberService memberService = new MemberService(loadMemberPort, commandMemberPort, loadOAuthInfoPort, commandOAuthInfoPort, commandOAuthPort, loadTokenPort, applicationEventPublisher);
 
     private static final String EMAIL = "email";
     private static final String NICKNAME = "nickname";

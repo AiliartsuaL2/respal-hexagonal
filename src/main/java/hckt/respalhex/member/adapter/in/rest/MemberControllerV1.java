@@ -21,7 +21,7 @@ class MemberControllerV1 {
     private final PostMemberUseCase postMemberUseCase;
     private final GetMemberUseCase getMemberUseCase;
 
-    @PostMapping("/signup")
+    @PostMapping("/sign-up")
     ResponseEntity<ApiCommonResponse<String>> create(
             @RequestBody CreateMemberAdapterRequestDto requestDto) {
         postMemberUseCase.create(requestDto.convertToApplicationDto());

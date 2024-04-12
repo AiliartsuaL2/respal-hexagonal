@@ -46,8 +46,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/resources/templates/member/login.html").permitAll()
                         .requestMatchers(HttpMethod.GET, "/member/login").permitAll()
-                        .requestMatchers("/api/v1.0/signup").permitAll()
-                        .requestMatchers("/api/v1.0/signin").permitAll()
+                        .requestMatchers("/api/v1.0/sign-up").permitAll()
+                        .requestMatchers("/api/v1.0/sign-in").permitAll()
                         // 0410 token 로직 변경 ( redirect -> sqs 활용 내부 통신)
 //                        .requestMatchers("/api/v1.0/token").permitAll()
                         .requestMatchers(OAUTH_V1_WHITELIST).permitAll()

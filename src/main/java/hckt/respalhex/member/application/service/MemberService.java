@@ -33,6 +33,7 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCas
     private final LoadOAuthInfoPort loadOAuthInfoPort;
     private final CommandOAuthInfoPort commandOAuthInfoPort;
     private final CommandOAuthPort commandOAuthPort;
+    private final LoadTokenPort loadTokenPort;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
@@ -83,7 +84,7 @@ class MemberService implements PostMemberUseCase, GetMemberUseCase, SignInUseCas
 
     @Override
     public GetTokenResponseDto getToken(Long memberId) {
-        return null;
+        return loadTokenPort.loadToken(memberId);
     }
 }
 

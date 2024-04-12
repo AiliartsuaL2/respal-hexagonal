@@ -54,7 +54,7 @@ public class SignInControllerV1 {
      *      - 400 에러 및 에러 메세지 응답
      *
      */
-    @PostMapping("/signin")
+    @PostMapping("/sign-in")
     ResponseEntity<?> signin(@RequestBody SignInAdapterRequestDto requestDto) {
         Long memberId = signInUseCase.signIn(requestDto.convertToApplicationDto());
         GetTokenResponseDto token = getTokenUseCase.getToken(memberId);
