@@ -1,16 +1,14 @@
 package hckt.respalhex.member.adapter.out.mq;
 
 import com.amazonaws.services.sqs.AmazonSQSRequester;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import hckt.respalhex.member.exception.ErrorMessage;
 import hckt.respalhex.global.annotation.MessageQueue;
 import hckt.respalhex.member.application.dto.response.GetTokenResponseDto;
 import hckt.respalhex.member.application.port.out.LoadTokenPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.messaging.MessagingException;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.services.sqs.model.Message;
