@@ -1,8 +1,8 @@
 package hckt.respalhex.member.application.dto.request;
 
+import hckt.respalhex.global.dto.ApplicationRequestDto;
 import hckt.respalhex.member.exception.ErrorMessage;
 import lombok.Builder;
-import org.springframework.util.ObjectUtils;
 
 @Builder
 public record PostMemberRequestDto (

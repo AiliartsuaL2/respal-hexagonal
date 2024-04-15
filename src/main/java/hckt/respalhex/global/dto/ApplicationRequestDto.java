@@ -1,4 +1,4 @@
-package hckt.respalhex.member.application.dto.request;
+package hckt.respalhex.global.dto;
 
 import hckt.respalhex.member.exception.ErrorMessage;
 import org.springframework.util.ObjectUtils;

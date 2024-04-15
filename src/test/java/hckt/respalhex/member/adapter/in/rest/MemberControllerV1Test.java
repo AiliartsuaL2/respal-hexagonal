@@ -45,7 +45,7 @@ class MemberControllerV1Test {
     @Nested
     @DisplayName("회원 가입 테스트")
     class PostMemberTest {
-        private static final String endpoint = "/api/v1.0/signup";
+        private static final String endpoint = "/api/v1.0/sign-up";
         private static final String EMAIL = "email";
         private static final String NICKNAME = "nickname";
         private static final String PASSWORD = "password";

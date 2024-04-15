@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 )
 @ActiveProfiles(value = "test")
 class SignInControllerV1Test {
-    private static final String COMMON_SIGNIN_ENDPOINT = "/api/v1.0/signin";
+    private static final String COMMON_SIGNIN_ENDPOINT = "/api/v1.0/sign-in";
     private static final String OAUTH_WEB_ENDPOINT = "/api/v1.0/web/oauth/google";
     private static final String OAUTH_APP_ENDPOINT = "/api/v1.0/app/oauth/google";
     private static final Long MEMBER_ID = 0L;

@@ -1,5 +1,6 @@
 package hckt.respalhex.member.adapter.dto.request;
 
+import hckt.respalhex.global.dto.AdapterRequestDto;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
 import lombok.Builder;
 
