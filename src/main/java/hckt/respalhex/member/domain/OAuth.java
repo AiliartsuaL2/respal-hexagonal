@@ -28,6 +28,7 @@ public class OAuth {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name= "MEMBER_ID")
     private Member member;
+
     //소셜 타입
     @Convert(converter = ProviderConverter.class)
     @Column(columnDefinition = "varchar(10)")

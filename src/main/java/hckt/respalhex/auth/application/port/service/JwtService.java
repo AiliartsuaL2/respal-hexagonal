@@ -5,6 +5,7 @@ import hckt.respalhex.auth.application.port.in.ExtractPayloadUseCase;
 import hckt.respalhex.auth.application.port.in.RenewAccessTokenUseCase;
 import hckt.respalhex.auth.application.port.out.CommandRefreshTokenPort;
 import hckt.respalhex.auth.application.port.out.LoadRefreshTokenPort;
+import hckt.respalhex.auth.application.port.out.LoadUserAccountPort;
 import hckt.respalhex.auth.application.port.service.provider.CreateTokenProvider;
 import hckt.respalhex.auth.application.port.service.provider.GetTokenInfoProvider;
 import hckt.respalhex.auth.domain.Token;
@@ -13,20 +14,27 @@ import hckt.respalhex.auth.exception.ErrorMessage;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, RenewAccessTokenUseCase {
     private final CommandRefreshTokenPort commandRefreshTokenPort;
     private final LoadRefreshTokenPort loadRefreshTokenPort;
     private final CreateTokenProvider createTokenProvider;
     private final GetTokenInfoProvider getTokenInfoProvider;
+    private final LoadUserAccountPort loadUserAccountPort;
 
     @Override
+    @Transactional
     public Token create(Long memberId) {
         if (ObjectUtils.isEmpty(memberId)) {
             throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_MEMBER_ID_EXCEPTION.getMessage());
+        }
+        if (loadUserAccountPort.findUserAccountByMemberId(memberId).isEmpty()) {
+            throw new IllegalStateException(ErrorMessage.NOT_EXIST_MEMBER_EXCEPTION.getMessage());
         }
         String accessToken = createTokenProvider.createAccessToken(String.valueOf(memberId));
         String refreshToken = createRefreshToken(memberId);
@@ -43,6 +51,7 @@ public class JwtService implements CreateTokenUseCase, ExtractPayloadUseCase, Re
     }
 
     @Override
+    @Transactional
     public String renewAccessToken(String requestRefreshToken) {
         if (ObjectUtils.isEmpty(requestRefreshToken)) {
            throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_REFRESH_TOKEN_EXCEPTION.getMessage());

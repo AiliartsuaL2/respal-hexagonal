@@ -45,6 +45,7 @@ class MemberControllerV1Test {
     @Nested
     @DisplayName("회원 가입 테스트")
     class PostMemberTest {
+        private static final String endpoint = "/api/v1.0/signup";
         private static final String EMAIL = "email";
         private static final String NICKNAME = "nickname";
         private static final String PASSWORD = "password";
@@ -64,7 +65,7 @@ class MemberControllerV1Test {
                     .build();
 
             //when
-            mockMvc.perform(post("/v1.0.0/member")
+            mockMvc.perform(post(endpoint)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(requestDto))
                             .with(csrf()))

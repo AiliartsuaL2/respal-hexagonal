@@ -21,7 +21,9 @@ public enum ErrorMessage {
     NOT_EXIST_PAYLOAD_EXCEPTION(HttpStatus.UNAUTHORIZED, "payLoad가 존재하지 않아요"),
     NOT_EXIST_TOKEN_EXCEPTION(HttpStatus.BAD_REQUEST, "토큰이 존재하지 않아요"),
     NOT_EXIST_KEY_ID_EXCEPTION(HttpStatus.BAD_REQUEST, "keyId가 존재하지 않아요"),
-    NOT_EXIST_ROLE_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "Role Type이 존재하지 않아요");
+    NOT_EXIST_ROLE_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "Role Type이 존재하지 않아요"),
+    NOT_EXIST_MEMBER_EXCEPTION(HttpStatus.BAD_REQUEST, "존재하지 않는 회원이에요"),
+    INVALID_MEMBER_ID_EXCEPTION(HttpStatus.BAD_REQUEST, "요청 메세지가 올바른 회원 ID 형식이 아니에요");
 
     private final HttpStatus httpStatus;
     private final String message;

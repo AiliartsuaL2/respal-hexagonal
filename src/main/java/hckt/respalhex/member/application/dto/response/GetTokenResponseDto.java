@@ -1,12 +1,9 @@
-package hckt.respalhex.auth.domain;
+package hckt.respalhex.member.application.dto.response;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-public record Token(
-        String accessToken,
-        String refreshToken
-){
+public record GetTokenResponseDto(String accessToken, String refreshToken){
     public String convertToQueryParam() {
         return "?token=" + URLEncoder.encode(toString(), StandardCharsets.UTF_8);
     }

@@ -1,5 +1,5 @@
 package hckt.respalhex.member.adapter.dto.request;
 
-public interface RequestDto<T> {
+public interface AdapterRequestDto<T> {
     T convertToApplicationDto();
 }

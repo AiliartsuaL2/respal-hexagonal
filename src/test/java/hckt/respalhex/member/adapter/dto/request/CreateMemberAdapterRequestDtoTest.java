@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class CreateMemberRequestDtoTest {
+class CreateMemberAdapterRequestDtoTest {
     @Nested
     @DisplayName("ApplicationDto 변경 테스트")
     class ConvertToApplicationDto {
@@ -23,7 +23,7 @@ class CreateMemberRequestDtoTest {
         @DisplayName("정상 케이스")
         void 정상_케이스() {
             // given
-            CreateMemberRequestDto requestDto = CreateMemberRequestDto.builder()
+            CreateMemberAdapterRequestDto requestDto = CreateMemberAdapterRequestDto.builder()
                     .email(EMAIL)
                     .password(PASSWORD)
                     .nickname(NICKNAME)
@@ -46,7 +46,7 @@ class CreateMemberRequestDtoTest {
         @DisplayName("필수 인자 미입력시 예외 발생 - 이메일")
         void 필수_인자_미입력시_예외_발생_이메일() {
             // given
-            CreateMemberRequestDto requestDto = CreateMemberRequestDto.builder()
+            CreateMemberAdapterRequestDto requestDto = CreateMemberAdapterRequestDto.builder()
                     .password(PASSWORD)
                     .nickname(NICKNAME)
                     .picture(PICTURE)
@@ -63,7 +63,7 @@ class CreateMemberRequestDtoTest {
         @DisplayName("필수 인자 미입력시 예외 발생 - 비밀번호")
         void 필수_인자_미입력시_예외_발생_비밀번호() {
             // given
-            CreateMemberRequestDto requestDto = CreateMemberRequestDto.builder()
+            CreateMemberAdapterRequestDto requestDto = CreateMemberAdapterRequestDto.builder()
                     .email(EMAIL)
                     .nickname(NICKNAME)
                     .picture(PICTURE)
@@ -80,7 +80,7 @@ class CreateMemberRequestDtoTest {
         @DisplayName("필수 인자 미입력시 예외 발생 - 닉네임")
         void 필수_인자_미입력시_예외_발생_닉네임() {
             // given
-            CreateMemberRequestDto requestDto = CreateMemberRequestDto.builder()
+            CreateMemberAdapterRequestDto requestDto = CreateMemberAdapterRequestDto.builder()
                     .email(EMAIL)
                     .password(PASSWORD)
                     .picture(PICTURE)
@@ -97,7 +97,7 @@ class CreateMemberRequestDtoTest {
         @DisplayName("필수 인자 미입력시 예외 발생 - provider")
         void 필수_인자_미입력시_예외_발생_provider() {
             // given
-            CreateMemberRequestDto requestDto = CreateMemberRequestDto.builder()
+            CreateMemberAdapterRequestDto requestDto = CreateMemberAdapterRequestDto.builder()
                     .email(EMAIL)
                     .password(PASSWORD)
                     .nickname(NICKNAME)
@@ -114,7 +114,7 @@ class CreateMemberRequestDtoTest {
         @DisplayName("선택 인자 미입력시 정상 생성 - 이미지")
         void 선택_인자_미입력시_정상_생성_이미지() {
             // given
-            CreateMemberRequestDto requestDto = CreateMemberRequestDto.builder()
+            CreateMemberAdapterRequestDto requestDto = CreateMemberAdapterRequestDto.builder()
                     .email(EMAIL)
                     .password(PASSWORD)
                     .nickname(NICKNAME)
