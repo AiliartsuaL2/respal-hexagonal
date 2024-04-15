@@ -3,26 +3,26 @@ package hckt.respalhex.member.domain;
 
 import hckt.respalhex.member.exception.ErrorMessage;
 import hckt.respalhex.member.application.dto.request.PostMemberRequestDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.ObjectUtils;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "member")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class Member {
     private static final String RANDOM_PICTURE_URL = "https://www.gravatar.com/avatar/";
     private static final String PICTURE_TYPE_PARAM = "?d=identicon";
@@ -44,6 +44,12 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<OAuth> oauthList;
+    private Boolean isDeleted;
+    @CreatedDate
+    private LocalDateTime createdDate;
+    @LastModifiedDate
+    private LocalDateTime modifiedDate;
+    private LocalDateTime deletedDate;
 
     public static Member create(PostMemberRequestDto requestDto) {
         String encodedPassword = B_CRYPT_PASSWORD_ENCODER.encode(requestDto.password());
@@ -77,4 +83,10 @@ public class Member {
         }
         return picture;
     }
+
+    public void delete() {
+        this.isDeleted = true;
+        this.deletedDate = LocalDateTime.now();
+    }
 }
+

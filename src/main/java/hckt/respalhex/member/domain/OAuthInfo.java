@@ -6,13 +6,18 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name="OAUTH_INFO")
+@EntityListeners(AuditingEntityListener.class)
 public class OAuthInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +36,10 @@ public class OAuthInfo {
     private String image;
 
     private String nickname;
+    @CreatedDate
+    private LocalDateTime createdDate;
+    @LastModifiedDate
+    private LocalDateTime modifiedDate;
 
     public OAuthInfo(Provider provider, String email, String image, String nickname) {
         this.uid = UUID.randomUUID().toString().replace("-", "");
