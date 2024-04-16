@@ -10,4 +10,10 @@ public class MemberInfo {
     private String email;
     private String nickName;
     private String picture;
+
+    public MemberInfo(String email, String nickName, String picture) {
+        this.email = email;
+        this.nickName = nickName;
+        this.picture = picture;
+    }
 }

@@ -1,5 +1,6 @@
 package hckt.respalhex.resume.domain;
 
+import com.querydsl.core.annotations.QueryProjection;
 import hckt.respalhex.resume.exception.ErrorMessage;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -42,6 +43,20 @@ public class Resume {
 
     @Transient
     private List<ResumeFile> resumeFiles;
+
+
+    @QueryProjection
+    public Resume(Resume resume, String memberEmail, String memberNickName, String memberPicture){
+        this.id = resume.id;
+        this.title = resume.title;
+        this.views = resume.views;
+        this.memberId = resume.memberId;
+        this.isDeleted = resume.isDeleted;
+        this.createdDate = resume.createdDate;
+        this.modifiedDate = resume.modifiedDate;
+        this.deletedDate = resume.deletedDate;
+        this.memberInfo = new MemberInfo(memberEmail, memberNickName, memberPicture);
+    }
 
     public void view() {
         this.views++;

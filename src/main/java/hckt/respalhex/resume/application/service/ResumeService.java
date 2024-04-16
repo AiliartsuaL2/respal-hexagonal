@@ -10,6 +10,7 @@ import hckt.respalhex.resume.application.port.in.PostResumeUseCase;
 import hckt.respalhex.resume.application.port.in.UpdateResumeUseCase;
 import hckt.respalhex.resume.application.port.out.CommandResumeFilePort;
 import hckt.respalhex.resume.application.port.out.CommandResumePort;
+import hckt.respalhex.resume.application.port.out.LoadResumeFilePort;
 import hckt.respalhex.resume.application.port.out.LoadResumePort;
 import hckt.respalhex.resume.domain.Resume;
 import hckt.respalhex.resume.domain.ResumeFile;
@@ -25,6 +26,7 @@ import java.util.List;
 public class ResumeService implements PostResumeUseCase, GetResumeUseCase, UpdateResumeUseCase, DeleteResumeUseCase {
     private final CommandResumePort commandResumePort;
     private final LoadResumePort loadResumePort;
+    private final LoadResumeFilePort loadResumeFilePort;
     private final CommandResumeFilePort commandResumeFilePort;
 
     @Override
@@ -41,7 +43,7 @@ public class ResumeService implements PostResumeUseCase, GetResumeUseCase, Updat
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXIST_RESUME_EXCEPTION.getMessage()));
         resume.delete(memberId);
 
-        List<ResumeFile> resumeFiles = loadResumePort.findResumeFilesByResumeId(resumeId);
+        List<ResumeFile> resumeFiles = loadResumeFilePort.findResumeFilesByResumeId(resumeId);
         for (ResumeFile resumeFile : resumeFiles) {
             resumeFile.delete();
         }
@@ -51,7 +53,7 @@ public class ResumeService implements PostResumeUseCase, GetResumeUseCase, Updat
     public GetResumeResponseDto view(Long resumeId, Long memberId) {
         Resume resume = loadResumePort.findResumeWithMemberInfo(resumeId)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXIST_RESUME_EXCEPTION.getMessage()));
-        List<ResumeFile> resumeFiles = loadResumePort.findResumeFilesByResumeId(resumeId);
+        List<ResumeFile> resumeFiles = loadResumeFilePort.findResumeFilesByResumeId(resumeId);
         return GetResumeResponseDto.ofDetail(resume, resumeFiles);
     }
 

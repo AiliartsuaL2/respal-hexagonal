@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-class MemberRepositoryCustomImpl implements MemberRepositoryCustom{
+class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override

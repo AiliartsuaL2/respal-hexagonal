@@ -1,11 +1,9 @@
-package hckt.respalhex.resume.application.port.out;
+package hckt.respalhex.resume.adapter.out.persistence;
 
 import hckt.respalhex.resume.domain.Resume;
 
 import java.util.Optional;
 
-public interface LoadResumePort {
-    Optional<Resume> findById(Long resumeId);
-
+public interface ResumeRepositoryCustom {
     Optional<Resume> findResumeWithMemberInfo(Long resumeId);
 }
