@@ -1,5 +1,6 @@
 package hckt.respalhex.resume.domain;
 
+import hckt.respalhex.resume.exception.ErrorMessage;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,11 +37,20 @@ public class Resume {
 
     private LocalDateTime deletedDate;
 
+    @Transient
+    private MemberInfo memberInfo;
+
+    @Transient
+    private List<ResumeFile> resumeFiles;
+
     public void view() {
         this.views++;
     }
 
-    public void delete() {
+    public void delete(Long memberId) {
+        if (this.memberId.longValue() != memberId.longValue()) {
+            throw new IllegalStateException(ErrorMessage.PERMISSION_DENIED_TO_DELETE.getMessage());
+        }
         this.isDeleted = true;
         this.deletedDate = LocalDateTime.now();
     }
@@ -49,5 +60,12 @@ public class Resume {
         this.memberId = memberId;
         this.views = 0;
         this.isDeleted = false;
+    }
+
+    public void update(String title, Long memberId) {
+        if (this.memberId.longValue() != memberId.longValue()) {
+            throw new IllegalStateException(ErrorMessage.PERMISSION_DENIED_TO_UPDATE.getMessage());
+        }
+        this.title = title;
     }
 }
