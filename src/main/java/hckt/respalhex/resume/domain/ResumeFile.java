@@ -1,12 +1,11 @@
 package hckt.respalhex.resume.domain;
 
+import hckt.respalhex.global.domain.BaseEntity;
+import hckt.respalhex.resume.exception.ErrorMessage;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -14,8 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "resume")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class ResumeFile {
+public class ResumeFile extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,24 +28,32 @@ public class ResumeFile {
 
     private Boolean isDeleted;
 
-    @CreatedDate
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
-
     private LocalDateTime deletedDate;
 
-    public void delete() {
+    @Transient
+    Resume resume;
+
+    public void delete(Long memberId) {
+        notNullValidation(memberId, ErrorMessage.NOT_EXIST_MEMBER_ID_EXCEPTION.getMessage());
+        if (!memberId.equals(this.resume.getMemberId())) {
+            throw new IllegalStateException(ErrorMessage.PERMISSION_DENIED_TO_DELETE.getMessage());
+        }
+
         this.isDeleted = true;
         this.deletedDate = LocalDateTime.now();
     }
 
-    public ResumeFile(String originName, String storedName, String accessUrl, Long resumeId) {
+    public ResumeFile(String originName, String storedName, String accessUrl, Resume resume) {
+        notNullValidation(originName, ErrorMessage.NOT_EXIST_ORIGIN_NAME_EXCEPTION.getMessage());
+        notNullValidation(storedName, ErrorMessage.NOT_EXIST_STORED_NAME_EXCEPTION.getMessage());
+        notNullValidation(accessUrl, ErrorMessage.NOT_EXIST_ACCESS_URL_EXCEPTION.getMessage());
+        notNullValidation(resume, ErrorMessage.NOT_EXIST_RESUME_EXCEPTION.getMessage());
+
         this.originName = originName;
         this.storedName = storedName;
         this.accessUrl = accessUrl;
-        this.resumeId = resumeId;
+        this.resume = resume;
+        this.resumeId = resume.getId();
         this.isDeleted = false;
     }
 }

@@ -32,7 +32,7 @@ public class ResumeService implements PostResumeUseCase, GetResumeUseCase, Updat
     @Override
     public void create(CreateResumeRequestDto requestDto) {
         Resume resume = new Resume(requestDto.title(), requestDto.memberId());
-        ResumeFile resumeFile = new ResumeFile("", requestDto.fileName(), requestDto.filePath(), resume.getId());
+        ResumeFile resumeFile = new ResumeFile("", requestDto.fileName(), requestDto.filePath(), resume);
         commandResumePort.create(resume);
         commandResumeFilePort.create(resumeFile);
     }
@@ -45,7 +45,7 @@ public class ResumeService implements PostResumeUseCase, GetResumeUseCase, Updat
 
         List<ResumeFile> resumeFiles = loadResumeFilePort.findResumeFilesByResumeId(resumeId);
         for (ResumeFile resumeFile : resumeFiles) {
-            resumeFile.delete();
+            resumeFile.delete(memberId);
         }
     }
 
@@ -54,6 +54,7 @@ public class ResumeService implements PostResumeUseCase, GetResumeUseCase, Updat
         Resume resume = loadResumePort.findResumeWithMemberInfo(resumeId)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXIST_RESUME_EXCEPTION.getMessage()));
         List<ResumeFile> resumeFiles = loadResumeFilePort.findResumeFilesByResumeId(resumeId);
+        resume.view();
         return GetResumeResponseDto.ofDetail(resume, resumeFiles);
     }
 

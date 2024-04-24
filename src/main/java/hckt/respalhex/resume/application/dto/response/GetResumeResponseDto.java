@@ -7,7 +7,6 @@ import java.util.List;
 
 public record GetResumeResponseDto(String title, List<String> filePath, Integer views, String memberNickName, String memberPicture) {
     public static GetResumeResponseDto ofDetail(Resume resume, List<ResumeFile> resumeFile) {
-        resume.view();
         return new GetResumeResponseDto(
                 resume.getTitle(),
                 resumeFile.stream().map(ResumeFile::getAccessUrl).toList(),
