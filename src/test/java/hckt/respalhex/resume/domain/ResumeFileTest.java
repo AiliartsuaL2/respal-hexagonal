@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 class ResumeFileTest {
     private static final String ORIGIN_NAME = "원래 파일 명";
-    private static final String STORED_NAME = "저장된 파일 명";
+    private static final String REGISTERED_NAME = "저장된 파일 명";
     private static final String ACCESS_URL = "접근 URL";
     private static final Long RESUME_OWNER = 1L;
     private static final Long NOT_RESUME_OWNER = 2L;
@@ -37,7 +37,7 @@ class ResumeFileTest {
             String originName = null;
 
             //when & then
-            assertThatThrownBy(() -> new ResumeFile(originName, STORED_NAME, ACCESS_URL, RESUME))
+            assertThatThrownBy(() -> new ResumeFile(originName, REGISTERED_NAME, ACCESS_URL, RESUME))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage(ErrorMessage.NOT_EXIST_ORIGIN_NAME_EXCEPTION.getMessage());
         }
@@ -46,12 +46,12 @@ class ResumeFileTest {
         @DisplayName("저장 파일명 미존재시 예외가 발생한다.")
         void test2() {
             //given
-            String storedName = null;
+            String registeredName = null;
 
             //when & then
-            assertThatThrownBy(() -> new ResumeFile(ORIGIN_NAME, storedName, ACCESS_URL, RESUME))
+            assertThatThrownBy(() -> new ResumeFile(ORIGIN_NAME, registeredName, ACCESS_URL, RESUME))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage(ErrorMessage.NOT_EXIST_STORED_NAME_EXCEPTION.getMessage());
+                    .hasMessage(ErrorMessage.NOT_EXIST_REGISTERED_NAME_EXCEPTION.getMessage());
         }
 
         @Test
@@ -61,7 +61,7 @@ class ResumeFileTest {
             String accessUrl = null;
 
             //when & then
-            assertThatThrownBy(() -> new ResumeFile(ORIGIN_NAME, STORED_NAME, accessUrl, RESUME))
+            assertThatThrownBy(() -> new ResumeFile(ORIGIN_NAME, REGISTERED_NAME, accessUrl, RESUME))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage(ErrorMessage.NOT_EXIST_ACCESS_URL_EXCEPTION.getMessage());
         }
@@ -73,7 +73,7 @@ class ResumeFileTest {
             Resume resume = null;
 
             //when & then
-            assertThatThrownBy(() -> new ResumeFile(ORIGIN_NAME, STORED_NAME, ACCESS_URL, resume))
+            assertThatThrownBy(() -> new ResumeFile(ORIGIN_NAME, REGISTERED_NAME, ACCESS_URL, resume))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage(ErrorMessage.NOT_EXIST_RESUME_EXCEPTION.getMessage());
         }
@@ -82,11 +82,11 @@ class ResumeFileTest {
         @DisplayName("정상 생성시 입력 필드가 매핑되고, 삭제 여부 상태가 false 이다.")
         void test5() {
             //given & when
-            ResumeFile resumeFile = new ResumeFile(ORIGIN_NAME, STORED_NAME, ACCESS_URL, RESUME);
+            ResumeFile resumeFile = new ResumeFile(ORIGIN_NAME, REGISTERED_NAME, ACCESS_URL, RESUME);
 
             //then
             assertThat(resumeFile.getOriginName()).isEqualTo(ORIGIN_NAME);
-            assertThat(resumeFile.getStoredName()).isEqualTo(STORED_NAME);
+            assertThat(resumeFile.getRegisteredName()).isEqualTo(REGISTERED_NAME);
             assertThat(resumeFile.getAccessUrl()).isEqualTo(ACCESS_URL);
             assertThat(resumeFile.getResumeId()).isEqualTo(RESUME_ID);
             assertThat(resumeFile.getIsDeleted()).isFalse();
@@ -100,7 +100,7 @@ class ResumeFileTest {
         @DisplayName("회원 ID 미존재시 예외가 발생한다.")
         void test1() {
             //given
-            ResumeFile resumeFile = new ResumeFile(ORIGIN_NAME, STORED_NAME, ACCESS_URL, RESUME);
+            ResumeFile resumeFile = new ResumeFile(ORIGIN_NAME, REGISTERED_NAME, ACCESS_URL, RESUME);
             Long memberId = null;
 
             //when & then
@@ -113,7 +113,7 @@ class ResumeFileTest {
         @DisplayName("삭제의 주체가 이력서의 주인이 아닌경우 예외가 발생한다.")
         void test2() {
             //given
-            ResumeFile resumeFile = new ResumeFile(ORIGIN_NAME, STORED_NAME, ACCESS_URL, RESUME);
+            ResumeFile resumeFile = new ResumeFile(ORIGIN_NAME, REGISTERED_NAME, ACCESS_URL, RESUME);
 
             //when & then
             assertThatThrownBy(() -> resumeFile.delete(NOT_RESUME_OWNER))
@@ -125,7 +125,7 @@ class ResumeFileTest {
         @DisplayName("정상 삭제시 삭제 여부 필드가 true가 되고, 삭제 시간이 설정된다.")
         void test3() {
             //given
-            ResumeFile resumeFile = new ResumeFile(ORIGIN_NAME, STORED_NAME, ACCESS_URL, RESUME);
+            ResumeFile resumeFile = new ResumeFile(ORIGIN_NAME, REGISTERED_NAME, ACCESS_URL, RESUME);
 
             //when
             resumeFile.delete(RESUME_OWNER);

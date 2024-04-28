@@ -7,7 +7,7 @@ import com.amazonaws.services.sqs.util.Constants;
 import com.google.gson.Gson;
 import hckt.respalhex.auth.domain.Token;
 import hckt.respalhex.member.exception.ErrorMessage;
-import hckt.respalhex.global.config.AwsSqsConfig;
+import hckt.respalhex.global.config.AwsConfig;
 import hckt.respalhex.member.application.dto.response.GetTokenResponseDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ import java.util.concurrent.TimeoutException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest(classes = AwsSqsConfig.class)
+@SpringBootTest(classes = AwsConfig.class)
 class LoadTokenMqAdapterTest {
     private static final String QUEUE_NAME = "respalMessageTestQueue";
     @Autowired

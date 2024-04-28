@@ -2,11 +2,10 @@ package hckt.respalhex.auth.adapter.in.mq;
 
 import com.amazonaws.services.sqs.AmazonSQSResponder;
 import com.amazonaws.services.sqs.util.Constants;
-import com.google.gson.Gson;
 import hckt.respalhex.auth.application.port.in.CreateTokenUseCase;
 import hckt.respalhex.auth.domain.Token;
 import hckt.respalhex.auth.exception.ErrorMessage;
-import hckt.respalhex.global.config.AwsSqsConfig;
+import hckt.respalhex.global.config.AwsConfig;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = AwsSqsConfig.class)
+@SpringBootTest(classes = AwsConfig.class)
 class GetTokenListenerTest {
     private static final String QUEUE_NAME = "respalMessageTestQueue";
     @Autowired

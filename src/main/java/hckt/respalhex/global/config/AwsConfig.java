@@ -1,5 +1,9 @@
 package hckt.respalhex.global.config;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQSRequester;
 import com.amazonaws.services.sqs.AmazonSQSRequesterClientBuilder;
 import com.amazonaws.services.sqs.AmazonSQSResponder;
@@ -18,7 +22,7 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 
 @Import(SqsBootstrapConfiguration.class)
 @Configuration
-public class AwsSqsConfig {
+public class AwsConfig {
 
     @Value("${spring.cloud.aws.credentials.access-key}")
     private String AWS_ACCESS_KEY;
@@ -28,6 +32,16 @@ public class AwsSqsConfig {
 
     @Value("${spring.cloud.aws.region.static}")
     private String AWS_REGION;
+
+
+    @Bean
+    public AmazonS3Client amazonS3Client() {
+        BasicAWSCredentials credentials = new BasicAWSCredentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+        return (AmazonS3Client) AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .withRegion(AWS_REGION)
+                .build();
+    }
 
     // sqs Client For Async
     @Bean

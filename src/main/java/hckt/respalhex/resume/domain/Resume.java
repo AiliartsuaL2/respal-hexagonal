@@ -4,6 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import hckt.respalhex.global.domain.BaseEntity;
 import hckt.respalhex.resume.exception.ErrorMessage;
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,6 +47,11 @@ public class Resume extends BaseEntity {
         this.modifiedDate = resume.modifiedDate;
         this.deletedDate = resume.deletedDate;
         this.memberInfo = new MemberInfo(memberEmail, memberNickName, memberPicture);
+        this.resumeFiles = new ArrayList<>();
+    }
+
+    public void addResumeFile(ResumeFile resumeFile) {
+        this.resumeFiles.add(resumeFile);
     }
 
     public void view() {
@@ -70,6 +76,7 @@ public class Resume extends BaseEntity {
         this.memberId = memberId;
         this.views = 0;
         this.isDeleted = false;
+        this.resumeFiles = new ArrayList<>();
     }
 
     public void update(String title, Long memberId) {
