@@ -59,9 +59,13 @@ public class Resume extends BaseEntity {
     }
 
     public void delete(Long memberId) {
+        if (this.isDeleted.booleanValue() == true) {
+            throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_RESUME_EXCEPTION.getMessage());
+        }
+
         notNullValidation(memberId, ErrorMessage.NOT_EXIST_MEMBER_ID_EXCEPTION.getMessage());
         if (this.memberId.longValue() != memberId.longValue()) {
-            throw new IllegalStateException(ErrorMessage.PERMISSION_DENIED_TO_DELETE.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.PERMISSION_DENIED_TO_DELETE.getMessage());
         }
 
         this.isDeleted = true;

@@ -144,13 +144,26 @@ class ResumeTest {
 
             //when & then
             assertThatThrownBy(() -> resume.delete(memberId))
-                    .isInstanceOf(IllegalStateException.class)
+                    .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage(ErrorMessage.PERMISSION_DENIED_TO_DELETE.getMessage());
         }
 
         @Test
-        @DisplayName("정상 삭제시, 삭제 여부 필드가 true가 되고, 삭제 일시가 설정된다.")
+        @DisplayName("이미 삭제된 이력서 삭제시 예외가 발생한다.")
         void test3() {
+            //given
+            Resume resume = new Resume(TITLE, MEMBER_ID);
+            resume.delete(MEMBER_ID);
+
+            //when & then
+            assertThatThrownBy(() -> resume.delete(MEMBER_ID))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage(ErrorMessage.NOT_EXIST_RESUME_EXCEPTION.getMessage());
+        }
+
+        @Test
+        @DisplayName("정상 삭제시, 삭제 여부 필드가 true가 되고, 삭제 일시가 설정된다.")
+        void test5() {
             //given
             Resume resume = new Resume(TITLE, MEMBER_ID);
             Long memberId = MEMBER_ID;

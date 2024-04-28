@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @UseCase
@@ -67,18 +68,19 @@ public class ResumeService implements PostResumeUseCase, GetResumeUseCase, Updat
     @Override
     @Transactional
     public void delete(Long resumeId, Long memberId) {
+        notNullValidation(resumeId, ErrorMessage.NOT_EXIST_RESUME_ID_EXCEPTION);
+        notNullValidation(memberId, ErrorMessage.NOT_EXIST_MEMBER_ID_EXCEPTION);
+
         Resume resume = loadResumePort.findById(resumeId)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXIST_RESUME_EXCEPTION.getMessage()));
         resume.delete(memberId);
-
-        List<ResumeFile> resumeFiles = loadResumeFilePort.findResumeFilesByResumeId(resumeId);
-        for (ResumeFile resumeFile : resumeFiles) {
-            resumeFile.delete(memberId);
-        }
     }
 
     @Override
-    public GetResumeResponseDto view(Long resumeId, Long memberId) {
+    public GetResumeResponseDto view(Long resumeId, Long viewer) {
+        notNullValidation(resumeId, ErrorMessage.NOT_EXIST_RESUME_ID_EXCEPTION);
+        notNullValidation(viewer, ErrorMessage.NOT_EXIST_MEMBER_ID_EXCEPTION);
+
         Resume resume = loadResumePort.findResumeWithMemberInfo(resumeId)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXIST_RESUME_EXCEPTION.getMessage()));
         List<ResumeFile> resumeFiles = loadResumeFilePort.findResumeFilesByResumeId(resumeId);
@@ -116,4 +118,11 @@ public class ResumeService implements PostResumeUseCase, GetResumeUseCase, Updat
     private String convertToRegisterName(String originName) {
         return UUID.randomUUID() + "." + extractExtension(originName);
     }
+
+    private <T> void notNullValidation(T data, ErrorMessage errorMessage) {
+        if (ObjectUtils.isEmpty(data)) {
+            throw new IllegalArgumentException(errorMessage.getMessage());
+        }
+    }
+
 }
