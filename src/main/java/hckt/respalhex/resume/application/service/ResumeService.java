@@ -16,8 +16,8 @@ import hckt.respalhex.resume.application.port.out.LoadResumeFilePort;
 import hckt.respalhex.resume.application.port.out.LoadResumePort;
 import hckt.respalhex.resume.domain.Resume;
 import hckt.respalhex.resume.domain.ResumeFile;
-import hckt.respalhex.resume.exception.AwsS3Exception;
 import hckt.respalhex.resume.exception.ErrorMessage;
+import hckt.respalhex.resume.exception.MultipartException;
 import java.io.IOException;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,8 +59,8 @@ public class ResumeService implements PostResumeUseCase, GetResumeUseCase, Updat
             commandResumePort.create(resume);
             commandResumeFilePort.create(resumeFile);
         } catch (IOException e) {
-            // S3 bucket Access 에러시 IOException
-            throw new AwsS3Exception(ErrorMessage.AWS_S3_ACCESS_ERROR_EXCEPTION.getMessage());
+            // Multipart 임시 저장에 실패하는 경우 IOException
+            throw new MultipartException(ErrorMessage.REGISTER_MULTIPART_EXCEPTION.getMessage());
         }
     }
 
@@ -105,7 +105,7 @@ public class ResumeService implements PostResumeUseCase, GetResumeUseCase, Updat
 
     // 이미지 파일의 확장자를 추출하는 메소드
     private String extractExtension(String originName) {
-        String[] fullName = originName.split(".");
+        String[] fullName = originName.split("\\.");
         if (fullName.length < 2) {
             throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_EXTENSION_EXCEPTION.getMessage());
         }
