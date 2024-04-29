@@ -1,12 +1,11 @@
 package hckt.respalhex.global.dto;
 
-import hckt.respalhex.member.exception.ErrorMessage;
 import org.springframework.util.ObjectUtils;
 
 public interface ApplicationRequestDto {
-    default <T> void validate(T data, ErrorMessage errorMessage) {
+    default <T> void requiredArgumentValidation(T data, String message) {
         if(ObjectUtils.isEmpty(data)) {
-            throw new IllegalArgumentException(errorMessage.getMessage());
+            throw new IllegalArgumentException(message);
         }
     }
 }

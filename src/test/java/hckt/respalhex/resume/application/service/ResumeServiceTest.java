@@ -46,7 +46,6 @@ class ResumeServiceTest {
     @DisplayName("이력서 생성 테스트")
     class Create {
         private static final String TITLE = "title";
-        private static final String FILE_PATH = "filePath";
         private static final String FILE_NAME = "fileName.jpg";
         private static final Long MEMBER_ID = 1L;
         @Test
@@ -54,8 +53,9 @@ class ResumeServiceTest {
         void test1() {
             //given
             String notHasExtensionFileName = "fileName";
-            CreateResumeRequestDto requestDto = new CreateResumeRequestDto(TITLE, FILE_PATH,
-                    notHasExtensionFileName, MEMBER_ID);
+            when(multipartFile.getOriginalFilename())
+                    .thenReturn(notHasExtensionFileName);
+            CreateResumeRequestDto requestDto = new CreateResumeRequestDto(TITLE, MEMBER_ID);
 
             //when & then
             assertThatThrownBy(() -> resumeService.create(requestDto, multipartFile))
@@ -67,8 +67,9 @@ class ResumeServiceTest {
         @DisplayName("파일 등록시, IOException이 발생하는경우 MultipartException이 발생한다.")
         void test2() throws IOException {
             //given
-            CreateResumeRequestDto requestDto = new CreateResumeRequestDto(TITLE, FILE_PATH,
-                    FILE_NAME, MEMBER_ID);
+            when(multipartFile.getOriginalFilename())
+                    .thenReturn(FILE_NAME);
+            CreateResumeRequestDto requestDto = new CreateResumeRequestDto(TITLE, MEMBER_ID);
             when(multipartFile.getInputStream())
                     .thenThrow(IOException.class);
 
@@ -82,8 +83,7 @@ class ResumeServiceTest {
         @DisplayName("정상 등록시 이력서와 이력서 파일을 저장한다.")
         void test3() throws IOException {
             //given
-            CreateResumeRequestDto requestDto = new CreateResumeRequestDto(TITLE, FILE_PATH,
-                    FILE_NAME, MEMBER_ID);
+            CreateResumeRequestDto requestDto = new CreateResumeRequestDto(TITLE, MEMBER_ID);
 
             URL url = mock(URL.class);
             String accessUrl = "accessUrl";
@@ -95,6 +95,8 @@ class ResumeServiceTest {
             int available = 1;
             when(inputStream.available())
                     .thenReturn(available);
+            when(multipartFile.getOriginalFilename())
+                    .thenReturn(FILE_NAME);
             when(multipartFile.getInputStream())
                     .thenReturn(inputStream);
 
@@ -266,7 +268,7 @@ class ResumeServiceTest {
             resumeService.view(EXIST_RESUME_ID, MEMBER_ID);
 
             //then
-            then(resume).should(times(1)).view();
+            then(resume).should(times(1)).view(MEMBER_ID);
         }
     }
 }

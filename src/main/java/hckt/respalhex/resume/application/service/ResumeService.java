@@ -52,10 +52,11 @@ public class ResumeService implements PostResumeUseCase, GetResumeUseCase, Updat
     @Transactional
     public void create(CreateResumeRequestDto requestDto, MultipartFile multipartFile) {
         try {
-            String registerName = convertToRegisterName(requestDto.fileName());
+            String fileName = multipartFile.getOriginalFilename();
+            String registerName = convertToRegisterName(fileName);
             String accessUrl = registerResumeFile(multipartFile, registerName);
             Resume resume = new Resume(requestDto.title(), requestDto.memberId());
-            ResumeFile resumeFile = new ResumeFile(requestDto.fileName(), registerName, accessUrl, resume);
+            ResumeFile resumeFile = new ResumeFile(fileName, registerName, accessUrl, resume);
 
             commandResumePort.create(resume);
             commandResumeFilePort.create(resumeFile);
@@ -83,8 +84,8 @@ public class ResumeService implements PostResumeUseCase, GetResumeUseCase, Updat
 
         Resume resume = loadResumePort.findResumeWithMemberInfo(resumeId)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_EXIST_RESUME_EXCEPTION.getMessage()));
+        resume.view(viewer);
         List<ResumeFile> resumeFiles = loadResumeFilePort.findResumeFilesByResumeId(resumeId);
-        resume.view();
         return GetResumeResponseDto.ofDetail(resume, resumeFiles);
     }
 
@@ -124,5 +125,4 @@ public class ResumeService implements PostResumeUseCase, GetResumeUseCase, Updat
             throw new IllegalArgumentException(errorMessage.getMessage());
         }
     }
-
 }

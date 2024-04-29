@@ -13,9 +13,9 @@ public record PostMemberRequestDto (
         String provider
 ) implements ApplicationRequestDto {
     public PostMemberRequestDto {
-        validate(email, ErrorMessage.NOT_EXIST_EMAIL_EXCEPTION);
-        validate(password, ErrorMessage.NOT_EXIST_PASSWORD_EXCEPTION);
-        validate(nickname, ErrorMessage.NOT_EXIST_NICKNAME_EXCEPTION);
-        validate(provider, ErrorMessage.NOT_EXIST_PROVIDER_TYPE_EXCEPTION);
+        requiredArgumentValidation(email, ErrorMessage.NOT_EXIST_EMAIL_EXCEPTION.getMessage());
+        requiredArgumentValidation(password, ErrorMessage.NOT_EXIST_PASSWORD_EXCEPTION.getMessage());
+        requiredArgumentValidation(nickname, ErrorMessage.NOT_EXIST_NICKNAME_EXCEPTION.getMessage());
+        requiredArgumentValidation(provider, ErrorMessage.NOT_EXIST_PROVIDER_TYPE_EXCEPTION.getMessage());
     }
 }
