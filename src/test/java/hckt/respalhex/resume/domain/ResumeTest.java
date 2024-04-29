@@ -2,6 +2,8 @@ package hckt.respalhex.resume.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import hckt.respalhex.resume.exception.ErrorMessage;
 import org.junit.jupiter.api.DisplayName;
@@ -175,5 +177,83 @@ class ResumeTest {
             assertThat(resume.getIsDeleted()).isTrue();
             assertThat(resume.getDeletedDate()).isNotNull();
         }
+    }
+
+    @Nested
+    @DisplayName("상세 조회 테스트")
+    class View {
+        @Test
+        @DisplayName("해당 이력서의 주인이 아니고, 태그되지 않은 회원이 조회시 예외가 발생한다.")
+        void test1() {
+            //given
+            Resume resume = new Resume(TITLE, MEMBER_ID);
+            Long notTaggedMemberId = 100L;
+
+            //when & then
+            assertThatThrownBy(() -> resume.view(notTaggedMemberId))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage(ErrorMessage.PERMISSION_DENIED_TO_VIEW.getMessage());
+        }
+
+        @Test
+        @DisplayName("본인 이력서의 경우 조회는 성공하지만, 조회수는 증가하지 않는다.")
+        void test2() {
+            //given
+            Resume resume = new Resume(TITLE, MEMBER_ID);
+
+            //when
+            resume.view(MEMBER_ID);
+
+            //then
+            assertThat(resume.getViews()).isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("태그 되어있는 다른 사람이 조회시 해당 이력서의 조회수가 증가한다.")
+        void test3() {
+            //given
+            Resume resume = new Resume(TITLE, MEMBER_ID);
+            Long taggedMemberId = 100L;
+            resume.tagMember(taggedMemberId);
+
+            //when
+            resume.view(taggedMemberId);
+
+            //then
+            assertThat(resume.getViews()).isEqualTo(1);
+        }
+    }
+
+    class TagMember {
+        @Test
+        @DisplayName("이미 태그되어있는 회원 태그시 예외가 발생한다")
+        void test1() {
+            //given
+            Resume resume = mock(Resume.class);
+            when(resume.isTaggedMember(MEMBER_ID))
+                    .thenReturn(true);
+
+            //when & then
+            assertThatThrownBy(() -> resume.tagMember(MEMBER_ID))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage(ErrorMessage.ALREADY_TAGGED_MEMBER_EXCEPTION.getMessage());
+        }
+
+        @Test
+        @DisplayName("정상 태그시 해당 이력서 태그 리스트에 해당 회원의 ID가 존재한다.")
+        void test2() {
+            //given
+            Resume resume = new Resume(TITLE, MEMBER_ID);
+            Long notTaggedMemberId = 100L;
+
+            //when
+            resume.tagMember(notTaggedMemberId);
+
+            //then
+            assertThat(resume.isTaggedMember(notTaggedMemberId)).isTrue();
+
+        }
+
+
     }
 }
